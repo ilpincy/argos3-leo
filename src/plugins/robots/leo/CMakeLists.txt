@@ -130,7 +130,9 @@ install(FILES ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE} DESTINATION 
 
 if(ARGOS_BUILD_FOR_SIMULATOR)
   install(FILES ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_SIMULATOR} DESTINATION include/argos3/plugins/robots/leo/simulator)
-  # install(FILES simulator/leo_texture_bottom.png simulator/leo_texture_side.png simulator/leo_texture_top.png DESTINATION include/argos3/plugins/simulator/visualizations/qt-opengl/textures)
+  if(ARGOS_QTOPENGL_FOUND)
+    install(DIRECTORY simulator/models DESTINATION include/argos3/plugins/simulator/visualizations/qt-opengl)
+  endif(ARGOS_QTOPENGL_FOUND)
 else(ARGOS_BUILD_FOR_SIMULATOR)
   install(FILES ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT} DESTINATION include/argos3/plugins/robots/leo/real_robot)
   install(FILES real_robot/main.cpp DESTINATION include/argos3/plugins/robots/leo/real_robot)

@@ -63,4 +63,4 @@ include(${CMAKE_SOURCE_DIR}/cmake/ARGoSPackaging.cmake)
 # Compile stuff
 #
 add_subdirectory(plugins)
-add_subdirectory(testing)
+# add_subdirectory(testing)

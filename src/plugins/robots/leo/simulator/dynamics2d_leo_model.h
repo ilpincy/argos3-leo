@@ -25,7 +25,7 @@ namespace argos {
    public:
 
       CDynamics2DLeoModel(CDynamics2DEngine& c_engine,
-                              CLeoEntity& c_entity);
+                          CLeoEntity& c_entity);
       virtual ~CDynamics2DLeoModel();
 
       virtual void Reset();
@@ -35,12 +35,6 @@ namespace argos {
    private:
 
       CLeoEntity& m_cLeoEntity;
-      CWheeledEntity& m_cWheeledEntity;
-
-      CDynamics2DDifferentialSteeringControl m_cDiffSteering;
-
-      const Real* m_fCurrentWheelVelocity;
-
    };
 
 }
