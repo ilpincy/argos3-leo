@@ -10,6 +10,7 @@
 #include <argos3/core/simulator/space/space.h>
 #include <argos3/core/simulator/entity/controllable_entity.h>
 #include <argos3/core/simulator/entity/embodied_entity.h>
+#include <argos3/plugins/simulator/entities/battery_equipped_entity.h>
 
 namespace argos {
 
@@ -18,8 +19,10 @@ namespace argos {
 
    CLeoEntity::CLeoEntity() :
       CComposableEntity(NULL),
-      // m_pcControllableEntity(NULL),
-      m_pcEmbodiedEntity(NULL) {
+      m_pcControllableEntity(NULL),
+      m_pcEmbodiedEntity(NULL),
+      m_pcWheeledEntity(NULL),
+      m_pcBatteryEquippedEntity(NULL) {
    }
 
    /****************************************/
@@ -28,10 +31,13 @@ namespace argos {
    CLeoEntity::CLeoEntity(const std::string& str_id,
                           const std::string& str_controller_id,
                           const CVector3& c_position,
-                          const CQuaternion& c_orientation) :
+                          const CQuaternion& c_orientation,
+                          const std::string& str_bat_model) :
       CComposableEntity(NULL, str_id),
-      // m_pcControllableEntity(NULL),
-      m_pcEmbodiedEntity(NULL) {
+      m_pcControllableEntity(NULL),
+      m_pcEmbodiedEntity(NULL),
+      m_pcWheeledEntity(NULL),
+      m_pcBatteryEquippedEntity(NULL) {
       try {
          /*
           * Create and init components
@@ -39,11 +45,20 @@ namespace argos {
          /* Embodied entity */
          m_pcEmbodiedEntity = new CEmbodiedEntity(this, "body_0", c_position, c_orientation);
          AddComponent(*m_pcEmbodiedEntity);
+         /* Wheeled entity and wheel positions (left, right) */
+         m_pcWheeledEntity = new CWheeledEntity(this, "wheels_0", 2);
+         AddComponent(*m_pcWheeledEntity);
+         m_pcWheeledEntity->SetWheel(0, CVector3(0.0f,  LEO_CHASSIS_WIDTH * 0.5, 0.0f), LEO_WHEEL_RADIUS);
+         m_pcWheeledEntity->SetWheel(1, CVector3(0.0f, -LEO_CHASSIS_WIDTH * 0.5, 0.0f), LEO_WHEEL_RADIUS);
+         /* Battery equipped entity */
+         m_pcBatteryEquippedEntity = new CBatteryEquippedEntity(this, "battery_0", str_bat_model);
+         AddComponent(*m_pcBatteryEquippedEntity);
          /* Controllable entity
-            It must be the last one, for actuators/sensors to link to composing entities correctly */
-         // m_pcControllableEntity = new CControllableEntity(this, "controller_0");
-         // AddComponent(*m_pcControllableEntity);
-         // m_pcControllableEntity->SetController(str_controller_id);
+            It must be the last one, for actuators/sensors to link to composing entities correctly
+         */
+         m_pcControllableEntity = new CControllableEntity(this, "controller_0");
+         AddComponent(*m_pcControllableEntity);
+         m_pcControllableEntity->SetController(str_controller_id);
          /* Update components */
          UpdateComponents();
       }
@@ -68,11 +83,21 @@ namespace argos {
          m_pcEmbodiedEntity = new CEmbodiedEntity(this);
          AddComponent(*m_pcEmbodiedEntity);
          m_pcEmbodiedEntity->Init(GetNode(t_tree, "body"));
+         /* Wheeled entity and wheel positions (left, right) */
+         m_pcWheeledEntity = new CWheeledEntity(this, "wheels_0", 2);
+         AddComponent(*m_pcWheeledEntity);
+         m_pcWheeledEntity->SetWheel(0, CVector3(0.0f,  LEO_CHASSIS_WIDTH * 0.5, 0.0f), LEO_WHEEL_RADIUS);
+         m_pcWheeledEntity->SetWheel(1, CVector3(0.0f, -LEO_CHASSIS_WIDTH * 0.5, 0.0f), LEO_WHEEL_RADIUS);
+         /* Battery equipped entity */
+         m_pcBatteryEquippedEntity = new CBatteryEquippedEntity(this, "battery_0");
+         if(NodeExists(t_tree, "battery"))
+            m_pcBatteryEquippedEntity->Init(GetNode(t_tree, "battery"));
+         AddComponent(*m_pcBatteryEquippedEntity);
          /* Controllable entity
             It must be the last one, for actuators/sensors to link to composing entities correctly */
-         // m_pcControllableEntity = new CControllableEntity(this);
-         // AddComponent(*m_pcControllableEntity);
-         // m_pcControllableEntity->Init(GetNode(t_tree, "controller"));
+         m_pcControllableEntity = new CControllableEntity(this);
+         AddComponent(*m_pcControllableEntity);
+         m_pcControllableEntity->Init(GetNode(t_tree, "controller"));
          /* Update components */
          UpdateComponents();
       }
@@ -102,6 +127,8 @@ namespace argos {
    /****************************************/
 
    void CLeoEntity::UpdateComponents() {
+      if(m_pcBatteryEquippedEntity->IsEnabled())
+         m_pcBatteryEquippedEntity->Update();
    }
 
    /****************************************/

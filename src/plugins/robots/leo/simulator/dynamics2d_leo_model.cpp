@@ -15,9 +15,14 @@ namespace argos {
    /****************************************/
    /****************************************/
 
-   // static const Real LEO_MASS                = 0.4f;
-   // static const Real LEO_MAX_FORCE           = 1.5f;
-   // static const Real LEO_MAX_TORQUE          = 1.5f;
+   static const Real LEO_MASS                = 0.4f;
+   static const Real LEO_MAX_FORCE           = 1.5f;
+   static const Real LEO_MAX_TORQUE          = 1.5f;
+
+   enum LEO_WHEELS {
+      LEO_LEFT_WHEEL = 0,
+      LEO_RIGHT_WHEEL = 1
+   };
 
    /****************************************/
    /****************************************/
@@ -25,45 +30,46 @@ namespace argos {
    CDynamics2DLeoModel::CDynamics2DLeoModel(CDynamics2DEngine& c_engine,
                                             CLeoEntity& c_entity) :
       CDynamics2DSingleBodyObjectModel(c_engine, c_entity),
-      m_cLeoEntity(c_entity) {
-      // m_cDiffSteering(c_engine,
-      //                 LEO_MAX_FORCE,
-      //                 LEO_MAX_TORQUE,
-      //                 LEO_WHEEL_DISTANCE,
-      //                 c_entity.GetConfigurationNode()),
-      // m_fCurrentWheelVelocity(m_cWheeledEntity.GetWheelVelocities()) {
-      // /* Create the body with initial position and orientation */
-      // cpBody* ptBody =
-      //    cpSpaceAddBody(GetDynamics2DEngine().GetPhysicsSpace(),
-      //                   cpBodyNew(LEO_MASS,
-      //                             cpMomentForCircle(LEO_MASS,
-      //                                               0.0f,
-      //                                               LEO_BASE_RADIUS + LEO_BASE_RADIUS,
-      //                                               cpvzero)));
-      // const CVector3& cPosition = GetEmbodiedEntity().GetOriginAnchor().Position;
-      // ptBody->p = cpv(cPosition.GetX(), cPosition.GetY());
-      // CRadians cXAngle, cYAngle, cZAngle;
-      // GetEmbodiedEntity().GetOriginAnchor().Orientation.ToEulerAngles(cZAngle, cYAngle, cXAngle);
-      // cpBodySetAngle(ptBody, cZAngle.GetValue());
-      // /* Create the body shape */
-      // cpShape* ptShape =
-      //    cpSpaceAddShape(GetDynamics2DEngine().GetPhysicsSpace(),
-      //                    cpCircleShapeNew(ptBody,
-      //                                     LEO_BASE_RADIUS,
-      //                                     cpvzero));
-      // ptShape->e = 0.0; // No elasticity
-      // ptShape->u = 0.7; // Lots of friction
-      // /* Constrain the actual base body to follow the diff steering control */
-      // m_cDiffSteering.AttachTo(ptBody);
-      // /* Set the body so that the default methods work as expected */
-      // SetBody(ptBody, LEO_BASE_TOP);
+      m_cLeoEntity(c_entity),
+      m_cWheeledEntity(m_cLeoEntity.GetWheeledEntity()),
+      m_cDiffSteering(c_engine,
+                      LEO_MAX_FORCE,
+                      LEO_MAX_TORQUE,
+                      LEO_CHASSIS_WIDTH,
+                      c_entity.GetConfigurationNode()),
+      m_fCurrentWheelVelocity(m_cWheeledEntity.GetWheelVelocities()) {
+      /* Create the body with initial position and orientation */
+      cpBody* ptBody =
+         cpSpaceAddBody(GetDynamics2DEngine().GetPhysicsSpace(),
+                        cpBodyNew(LEO_MASS,
+                                  cpMomentForCircle(LEO_MASS,
+                                                    0.0f,
+                                                    LEO_CHASSIS_WIDTH + LEO_CHASSIS_WIDTH,
+                                                    cpvzero)));
+      const CVector3& cPosition = GetEmbodiedEntity().GetOriginAnchor().Position;
+      ptBody->p = cpv(cPosition.GetX(), cPosition.GetY());
+      CRadians cXAngle, cYAngle, cZAngle;
+      GetEmbodiedEntity().GetOriginAnchor().Orientation.ToEulerAngles(cZAngle, cYAngle, cXAngle);
+      cpBodySetAngle(ptBody, cZAngle.GetValue());
+      /* Create the body shape */
+      cpShape* ptShape =
+         cpSpaceAddShape(GetDynamics2DEngine().GetPhysicsSpace(),
+                         cpCircleShapeNew(ptBody,
+                                          LEO_CHASSIS_WIDTH,
+                                          cpvzero));
+      ptShape->e = 0.0; // No elasticity
+      ptShape->u = 0.7; // Lots of friction
+      /* Constrain the actual base body to follow the diff steering control */
+      m_cDiffSteering.AttachTo(ptBody);
+      /* Set the body so that the default methods work as expected */
+      SetBody(ptBody, LEO_CHASSIS_HEIGHT);
    }
 
    /****************************************/
    /****************************************/
 
    CDynamics2DLeoModel::~CDynamics2DLeoModel() {
-      // m_cDiffSteering.Detach();
+      m_cDiffSteering.Detach();
    }
 
    /****************************************/
@@ -71,23 +77,23 @@ namespace argos {
 
    void CDynamics2DLeoModel::Reset() {
       CDynamics2DSingleBodyObjectModel::Reset();
-      // m_cDiffSteering.Reset();
+      m_cDiffSteering.Reset();
    }
 
    /****************************************/
    /****************************************/
 
    void CDynamics2DLeoModel::UpdateFromEntityStatus() {
-      // /* Do we want to move? */
-      // if((m_fCurrentWheelVelocity[LEO_LEFT_WHEEL] != 0.0f) ||
-      //    (m_fCurrentWheelVelocity[LEO_RIGHT_WHEEL] != 0.0f)) {
-      //    m_cDiffSteering.SetWheelVelocity(m_fCurrentWheelVelocity[LEO_LEFT_WHEEL],
-      //                                     m_fCurrentWheelVelocity[LEO_RIGHT_WHEEL]);
-      // }
-      // else {
-      //    /* No, we don't want to move - zero all speeds */
-      //    m_cDiffSteering.Reset();
-      // }
+      /* Do we want to move? */
+      if((m_fCurrentWheelVelocity[LEO_LEFT_WHEEL] != 0.0f) ||
+         (m_fCurrentWheelVelocity[LEO_RIGHT_WHEEL] != 0.0f)) {
+         m_cDiffSteering.SetWheelVelocity(m_fCurrentWheelVelocity[LEO_LEFT_WHEEL],
+                                          m_fCurrentWheelVelocity[LEO_RIGHT_WHEEL]);
+      }
+      else {
+         /* No, we don't want to move - zero all speeds */
+         m_cDiffSteering.Reset();
+      }
    }
 
    /****************************************/

@@ -35,6 +35,11 @@ namespace argos {
    private:
 
       CLeoEntity& m_cLeoEntity;
+      CWheeledEntity& m_cWheeledEntity;
+
+      CDynamics2DDifferentialSteeringControl m_cDiffSteering;
+
+      const Real* m_fCurrentWheelVelocity;
    };
 
 }

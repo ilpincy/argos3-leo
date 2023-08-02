@@ -8,12 +8,14 @@
 #define LEO_ENTITY_H
 
 namespace argos {
+   class CBatteryEquippedEntity;
    class CControllableEntity;
    class CEmbodiedEntity;
    class CLeoEntity;
 }
 
 #include <argos3/core/simulator/entity/composable_entity.h>
+#include <argos3/plugins/simulator/entities/wheeled_entity.h>
 
 namespace argos {
 
@@ -30,7 +32,8 @@ namespace argos {
       CLeoEntity(const std::string& str_id,
                  const std::string& str_controller_id,
                  const CVector3& c_position = CVector3(),
-                 const CQuaternion& c_orientation = CQuaternion());
+                 const CQuaternion& c_orientation = CQuaternion(),
+                 const std::string& str_bat_model = "");
       
       virtual void Init(TConfigurationNode& t_tree);
       virtual void Reset();
@@ -38,12 +41,20 @@ namespace argos {
 
       virtual void UpdateComponents();
       
-      // inline CControllableEntity& GetControllableEntity() {
-      //    return *m_pcControllableEntity;
-      // }
+      inline CControllableEntity& GetControllableEntity() {
+         return *m_pcControllableEntity;
+      }
 
       inline CEmbodiedEntity& GetEmbodiedEntity() {
          return *m_pcEmbodiedEntity;
+      }
+
+      inline CWheeledEntity& GetWheeledEntity() {
+         return *m_pcWheeledEntity;
+      }
+
+      inline CBatteryEquippedEntity& GetBatterySensorEquippedEntity() {
+          return *m_pcBatteryEquippedEntity;
       }
 
       virtual std::string GetTypeDescription() const {
@@ -52,8 +63,10 @@ namespace argos {
 
    private:
 
-      // CControllableEntity*            m_pcControllableEntity;
-      CEmbodiedEntity*                m_pcEmbodiedEntity;
+      CControllableEntity*    m_pcControllableEntity;
+      CEmbodiedEntity*        m_pcEmbodiedEntity;
+      CWheeledEntity*         m_pcWheeledEntity;
+      CBatteryEquippedEntity* m_pcBatteryEquippedEntity;
    };
 
 }
