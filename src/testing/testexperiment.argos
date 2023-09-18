@@ -27,12 +27,32 @@
   <!-- *********************** -->
   <!-- * Arena configuration * -->
   <!-- *********************** -->
-  <arena size="5, 5, 1" center="0,0,0.5">
+  <arena size="4, 4, 1" center="0,0,0.5">
 
     <leo id="leo">
       <body position="0,0,0" orientation="0,0,0" />
       <controller config="mycntrl" />
     </leo>
+
+    <box id="los" size="0.2,0.2,0.1" movable="false">
+      <body position="1,0,0" orientation="0,0,0"/>
+    </box>
+
+    <!-- <distribute>
+      <position method="uniform" min="1,0,0" max="2,0,0" />
+      <orientation method="constant" values="0,0,0" />
+      <entity quantity="1" max_trials="100">
+        <cylinder id="c" height="0.5" radius="005" movable="false" />
+      </entity>
+    </distribute>
+
+    <distribute>
+      <position method="uniform" min="0,1,0" max="0,2,0" />
+      <orientation method="constant" values="0,0,0" />
+      <entity quantity="1" max_trials="100">
+        <cylinder id="d" height="0.5" radius="0.2" movable="false" />
+      </entity>
+    </distribute> -->
     
   </arena>
 
@@ -52,7 +72,14 @@
   <!-- * Visualization * -->
   <!-- ****************** -->
   <visualization>
-    <qt-opengl />
+    <qt-opengl>
+    <camera>
+    <placements>
+        <placement index="0" position="0,0,5" look_at="0,0,0" up="-1,0,0" lens_focal_length="65" />
+    </placements>
+    </camera>
+    </qt-opengl>
+    
   </visualization>
 
 </argos-configuration>
