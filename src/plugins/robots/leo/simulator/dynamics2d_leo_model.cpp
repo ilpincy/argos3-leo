@@ -7,7 +7,6 @@
 #include "dynamics2d_leo_model.h"
 #include "leo_measures.h"
 
-#include <argos3/plugins/simulator/physics_engines/dynamics2d/dynamics2d_gripping.h>
 #include <argos3/plugins/simulator/physics_engines/dynamics2d/dynamics2d_engine.h>
 
 namespace argos {
@@ -15,13 +14,20 @@ namespace argos {
    /****************************************/
    /****************************************/
 
-   static const Real LEO_MASS                = 0.4f;
-   static const Real LEO_MAX_FORCE           = 1.5f;
-   static const Real LEO_MAX_TORQUE          = 1.5f;
+   static const Real LEO_MASS        = 0.4f;
+   static const Real LEO_MAX_FORCE   = 1.5f;
+   static const Real LEO_MAX_TORQUE  = 1.5f;
+   static const Real LEO_BODY_LENGTH = 0.43716;
+   static const Real LEO_BODY_WIDTH  = 0.44152;
+   static const Real LEO_BODY_HEIGHT = 0.16309;
 
-   enum LEO_WHEELS {
-      LEO_LEFT_WHEEL = 0,
-      LEO_RIGHT_WHEEL = 1
+   /* The model is a simple rectangle anchored at the base center */
+   /* NOTE: the points must be defined in a clockwise winding */
+   static cpVect tBodyVertices[] = {
+      cpv(-LEO_BODY_LENGTH / 2, -LEO_BODY_WIDTH / 2),
+      cpv(-LEO_BODY_LENGTH / 2,  LEO_BODY_WIDTH / 2),
+      cpv( LEO_BODY_LENGTH / 2,  LEO_BODY_WIDTH / 2),
+      cpv( LEO_BODY_LENGTH / 2, -LEO_BODY_WIDTH / 2),
    };
 
    /****************************************/
@@ -30,22 +36,15 @@ namespace argos {
    CDynamics2DLeoModel::CDynamics2DLeoModel(CDynamics2DEngine& c_engine,
                                             CLeoEntity& c_entity) :
       CDynamics2DSingleBodyObjectModel(c_engine, c_entity),
-      m_cLeoEntity(c_entity),
-      m_cWheeledEntity(m_cLeoEntity.GetWheeledEntity()),
-      m_cDiffSteering(c_engine,
-                      LEO_MAX_FORCE,
-                      LEO_MAX_TORQUE,
-                      LEO_CHASSIS_WIDTH,
-                      c_entity.GetConfigurationNode()),
-      m_fCurrentWheelVelocity(m_cWheeledEntity.GetWheelVelocities()) {
+      m_cLeoEntity(c_entity) {
       /* Create the body with initial position and orientation */
       cpBody* ptBody =
          cpSpaceAddBody(GetDynamics2DEngine().GetPhysicsSpace(),
                         cpBodyNew(LEO_MASS,
-                                  cpMomentForCircle(LEO_MASS,
-                                                    0.0f,
-                                                    LEO_CHASSIS_WIDTH + LEO_CHASSIS_WIDTH,
-                                                    cpvzero)));
+                                  cpMomentForPoly(LEO_MASS,
+                                                  4,
+                                                  tBodyVertices,
+                                                  cpvzero)));
       const CVector3& cPosition = GetEmbodiedEntity().GetOriginAnchor().Position;
       ptBody->p = cpv(cPosition.GetX(), cPosition.GetY());
       CRadians cXAngle, cYAngle, cZAngle;
@@ -54,22 +53,22 @@ namespace argos {
       /* Create the body shape */
       cpShape* ptShape =
          cpSpaceAddShape(GetDynamics2DEngine().GetPhysicsSpace(),
-                         cpCircleShapeNew(ptBody,
-                                          LEO_CHASSIS_WIDTH,
-                                          cpvzero));
+                         cpPolyShapeNew(ptBody,
+                                        4,
+                                        tBodyVertices,
+                                        cpvzero));
       ptShape->e = 0.0; // No elasticity
       ptShape->u = 0.7; // Lots of friction
-      /* Constrain the actual base body to follow the diff steering control */
-      m_cDiffSteering.AttachTo(ptBody);
+      /* Constrain the actual base body to follow the control body */
+      // TODO
       /* Set the body so that the default methods work as expected */
-      SetBody(ptBody, LEO_CHASSIS_HEIGHT);
+      SetBody(ptBody, LEO_BODY_HEIGHT);
    }
 
    /****************************************/
    /****************************************/
 
    CDynamics2DLeoModel::~CDynamics2DLeoModel() {
-      m_cDiffSteering.Detach();
    }
 
    /****************************************/
@@ -77,23 +76,12 @@ namespace argos {
 
    void CDynamics2DLeoModel::Reset() {
       CDynamics2DSingleBodyObjectModel::Reset();
-      m_cDiffSteering.Reset();
    }
 
    /****************************************/
    /****************************************/
 
    void CDynamics2DLeoModel::UpdateFromEntityStatus() {
-      /* Do we want to move? */
-      if((m_fCurrentWheelVelocity[LEO_LEFT_WHEEL] != 0.0f) ||
-         (m_fCurrentWheelVelocity[LEO_RIGHT_WHEEL] != 0.0f)) {
-         m_cDiffSteering.SetWheelVelocity(m_fCurrentWheelVelocity[LEO_LEFT_WHEEL],
-                                          m_fCurrentWheelVelocity[LEO_RIGHT_WHEEL]);
-      }
-      else {
-         /* No, we don't want to move - zero all speeds */
-         m_cDiffSteering.Reset();
-      }
    }
 
    /****************************************/

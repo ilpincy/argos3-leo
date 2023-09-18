@@ -15,7 +15,6 @@ namespace argos {
 }
 
 #include <argos3/core/simulator/entity/composable_entity.h>
-#include <argos3/plugins/simulator/entities/wheeled_entity.h>
 
 namespace argos {
 
@@ -49,10 +48,6 @@ namespace argos {
          return *m_pcEmbodiedEntity;
       }
 
-      inline CWheeledEntity& GetWheeledEntity() {
-         return *m_pcWheeledEntity;
-      }
-
       inline CBatteryEquippedEntity& GetBatterySensorEquippedEntity() {
           return *m_pcBatteryEquippedEntity;
       }
@@ -65,7 +60,6 @@ namespace argos {
 
       CControllableEntity*    m_pcControllableEntity;
       CEmbodiedEntity*        m_pcEmbodiedEntity;
-      CWheeledEntity*         m_pcWheeledEntity;
       CBatteryEquippedEntity* m_pcBatteryEquippedEntity;
    };
 
