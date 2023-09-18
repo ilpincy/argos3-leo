@@ -22,7 +22,8 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
   set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_SIMULATOR
     simulator/dynamics2d_leo_model.h
     simulator/leo_entity.h
-    simulator/leo_measures.h)
+    simulator/leo_measures.h
+    simulator/leo_posetwist_default_actuator.h)
 endif(ARGOS_BUILD_FOR_SIMULATOR)
 # argos3/plugins/robots/leo/real_robot
 # if(ARGOS_BUILD_FOR STREQUAL "leo")
@@ -68,7 +69,8 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
     ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_SIMULATOR}
     simulator/dynamics2d_leo_model.cpp
     simulator/leo_entity.cpp
-    simulator/leo_measures.cpp)
+    simulator/leo_measures.cpp
+    simulator/leo_posetwist_default_actuator.cpp)
   # Compile the graphical visualization only if the necessary libraries have been found
   if(ARGOS_QTOPENGL_FOUND)
     include_directories(${ARGOS_QTOPENGL_INCLUDE_DIRS})

@@ -52,6 +52,22 @@ namespace argos {
           return *m_pcBatteryEquippedEntity;
       }
 
+      inline Real GetLinearVelocity() const {
+         return m_fLinearVelocity;
+      }
+
+      inline void SetLinearVelocity(Real f_velocity) {
+         m_fLinearVelocity = f_velocity;
+      }
+
+      inline CRadians GetAngularVelocity() const {
+         return m_cAngularVelocity;
+      }
+
+      inline void SetAngularVelocity(CRadians c_velocity) {
+         m_cAngularVelocity = c_velocity;
+      }
+
       virtual std::string GetTypeDescription() const {
          return "leo";
       }
@@ -61,6 +77,8 @@ namespace argos {
       CControllableEntity*    m_pcControllableEntity;
       CEmbodiedEntity*        m_pcEmbodiedEntity;
       CBatteryEquippedEntity* m_pcBatteryEquippedEntity;
+      Real     m_fLinearVelocity;
+      CRadians m_cAngularVelocity;
    };
 
 }

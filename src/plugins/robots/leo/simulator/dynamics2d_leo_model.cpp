@@ -36,7 +36,8 @@ namespace argos {
    CDynamics2DLeoModel::CDynamics2DLeoModel(CDynamics2DEngine& c_engine,
                                             CLeoEntity& c_entity) :
       CDynamics2DSingleBodyObjectModel(c_engine, c_entity),
-      m_cLeoEntity(c_entity) {
+      m_cLeoEntity(c_entity),
+      m_cVelocityControl(c_engine, LEO_MAX_FORCE, LEO_MAX_TORQUE) {
       /* Create the body with initial position and orientation */
       cpBody* ptBody =
          cpSpaceAddBody(GetDynamics2DEngine().GetPhysicsSpace(),
@@ -60,7 +61,7 @@ namespace argos {
       ptShape->e = 0.0; // No elasticity
       ptShape->u = 0.7; // Lots of friction
       /* Constrain the actual base body to follow the control body */
-      // TODO
+      m_cVelocityControl.AttachTo(ptBody);
       /* Set the body so that the default methods work as expected */
       SetBody(ptBody, LEO_BODY_HEIGHT);
    }
@@ -69,6 +70,7 @@ namespace argos {
    /****************************************/
 
    CDynamics2DLeoModel::~CDynamics2DLeoModel() {
+      m_cVelocityControl.Detach();
    }
 
    /****************************************/
@@ -82,6 +84,8 @@ namespace argos {
    /****************************************/
 
    void CDynamics2DLeoModel::UpdateFromEntityStatus() {
+      m_cVelocityControl.SetLinearVelocity(CVector2(m_cLeoEntity.GetLinearVelocity(), 0.0));
+      m_cVelocityControl.SetAngularVelocity(m_cLeoEntity.GetAngularVelocity().GetValue());
    }
 
    /****************************************/

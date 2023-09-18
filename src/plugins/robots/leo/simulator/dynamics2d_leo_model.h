@@ -12,6 +12,7 @@ namespace argos {
 }
 
 #include <argos3/plugins/simulator/physics_engines/dynamics2d/dynamics2d_single_body_object_model.h>
+#include <argos3/plugins/simulator/physics_engines/dynamics2d/dynamics2d_velocity_control.h>
 #include <argos3/plugins/robots/leo/simulator/leo_entity.h>
 
 namespace argos {
@@ -30,7 +31,8 @@ namespace argos {
       
    private:
 
-      CLeoEntity& m_cLeoEntity;
+      CLeoEntity&                m_cLeoEntity;
+      CDynamics2DVelocityControl m_cVelocityControl;
    };
 
 }
