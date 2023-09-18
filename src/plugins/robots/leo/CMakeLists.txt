@@ -2,14 +2,16 @@
 # leo headers
 #
 # argos3/plugins/robots/leo/control_interface
-# set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE
+set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE
+  control_interface/ci_leo_posetwist_actuator.h
 #   control_interface/ci_leo_camera_sensor.h
 #   control_interface/ci_leo_encoder_sensor.h
 #   control_interface/ci_leo_ground_sensor.h
 #   control_interface/ci_leo_lidar_sensor.h
 #   control_interface/ci_leo_light_sensor.h
 #   control_interface/ci_leo_proximity_sensor.h
-#   control_interface/ci_leo_ultrasound_sensor.h)
+#   control_interface/ci_leo_ultrasound_sensor.h
+)
 # if(BUZZ_FOUND)
 #   set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE
 #     ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE}
@@ -43,15 +45,17 @@ endif(ARGOS_BUILD_FOR_SIMULATOR)
 #
 # leo sources
 #
-# set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
-#   ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE}
+set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
+  ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE}
+  control_interface/ci_leo_posetwist_actuator.cpp
 #   control_interface/ci_leo_camera_sensor.cpp
 #   control_interface/ci_leo_encoder_sensor.cpp
 #   control_interface/ci_leo_ground_sensor.cpp
 #   control_interface/ci_leo_lidar_sensor.cpp
 #   control_interface/ci_leo_light_sensor.cpp
 #   control_interface/ci_leo_proximity_sensor.cpp
-#   control_interface/ci_leo_ultrasound_sensor.cpp)
+#   control_interface/ci_leo_ultrasound_sensor.cpp
+)
 # if(BUZZ_FOUND)
 #   set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
 #     ${ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO}
