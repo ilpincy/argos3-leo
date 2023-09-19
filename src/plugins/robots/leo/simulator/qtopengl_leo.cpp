@@ -43,7 +43,7 @@ namespace argos {
       void ApplyTo(CQTOpenGLWidget& c_visualization,
                    CLeoEntity& c_entity) {
          static CQTOpenGLLeo m_cModel;
-         // c_visualization.DrawRays(c_entity.GetControllableEntity());
+         c_visualization.DrawRays(c_entity.GetControllableEntity());
          c_visualization.DrawEntity(c_entity.GetEmbodiedEntity());
          m_cModel.Draw(c_entity);
       }
