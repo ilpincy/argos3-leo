@@ -7,8 +7,13 @@
 
 CTestController::CTestController() {}
 
-void CTestController::Init(TConfigurationNode& t_node) {}
+void CTestController::Init(TConfigurationNode& t_node) {
 
-void CTestController::ControlStep() {}
+   leoPoseTwistActuator = GetActuator<CCI_LeoPoseTwistActuator>("leo_posetwist");
+}
+
+void CTestController::ControlStep() {
+    leoPoseTwistActuator->SetLinearVelocity(1.0);
+}
 
 REGISTER_CONTROLLER(CTestController, "test_controller")

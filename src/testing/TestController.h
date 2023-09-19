@@ -3,6 +3,7 @@
 
 /* Definition of the CCI_Controller class. */
 #include <argos3/core/control_interface/ci_controller.h>
+#include <argos3/plugins/robots/leo/control_interface/ci_leo_posetwist_actuator.h>
 
 using namespace argos;
 
@@ -44,6 +45,10 @@ public:
     * completeness.
     */
    virtual void Destroy() {}
+
+   private:
+
+    CCI_LeoPoseTwistActuator* leoPoseTwistActuator;
 
 };
 
