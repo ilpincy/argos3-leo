@@ -20,12 +20,9 @@ namespace argos {
    /****************************************/
 
    void CLeoPoseTwistDefaultActuator::SetRobot(CComposableEntity& c_entity) {
-      try {
-         /* Get the leo component */
-         m_pcLeoEntity = &(c_entity.GetComponent<CLeoEntity>("leo"));
-      }
-      catch(CARGoSException& ex) {
-         THROW_ARGOSEXCEPTION_NESTED("Error setting leo pose-twist actuator to entity \"" << c_entity.GetId() << "\"", ex);
+      m_pcLeoEntity = dynamic_cast<CLeoEntity*>(&c_entity);
+      if(!m_pcLeoEntity) {
+         THROW_ARGOSEXCEPTION("Error setting leo pose-twist actuator to entity \"" << c_entity.GetId() << "\"");
       }
    }
 
