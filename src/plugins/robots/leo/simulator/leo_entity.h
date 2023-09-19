@@ -11,6 +11,8 @@ namespace argos {
    class CBatteryEquippedEntity;
    class CControllableEntity;
    class CEmbodiedEntity;
+   class CRABEquippedEntity;
+   class CProximitySensorEquippedEntity;
    class CLeoEntity;
 }
 
@@ -32,6 +34,8 @@ namespace argos {
                  const std::string& str_controller_id,
                  const CVector3& c_position = CVector3(),
                  const CQuaternion& c_orientation = CQuaternion(),
+                 Real f_rab_range = 3.0f,
+                 size_t un_rab_data_size = 10,
                  const std::string& str_bat_model = "");
       
       virtual void Init(TConfigurationNode& t_tree);
@@ -50,6 +54,14 @@ namespace argos {
 
       inline CBatteryEquippedEntity& GetBatterySensorEquippedEntity() {
           return *m_pcBatteryEquippedEntity;
+      }
+
+      inline CRABEquippedEntity& GetRABEquippedEntity() {
+         return *m_pcRABEquippedEntity;
+      }
+
+      inline CProximitySensorEquippedEntity& GetProximitySensorEquippedEntity() {
+         return *m_pcProximitySensorEquippedEntity;
       }
 
       inline Real GetLinearVelocity() const {
@@ -74,9 +86,11 @@ namespace argos {
 
    private:
 
-      CControllableEntity*    m_pcControllableEntity;
-      CEmbodiedEntity*        m_pcEmbodiedEntity;
-      CBatteryEquippedEntity* m_pcBatteryEquippedEntity;
+      CControllableEntity*            m_pcControllableEntity;
+      CEmbodiedEntity*                m_pcEmbodiedEntity;
+      CBatteryEquippedEntity*         m_pcBatteryEquippedEntity;
+      CRABEquippedEntity*             m_pcRABEquippedEntity;
+      CProximitySensorEquippedEntity* m_pcProximitySensorEquippedEntity;
       Real     m_fLinearVelocity;
       CRadians m_cAngularVelocity;
    };

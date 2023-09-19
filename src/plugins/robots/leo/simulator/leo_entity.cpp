@@ -11,17 +11,27 @@
 #include <argos3/core/simulator/entity/controllable_entity.h>
 #include <argos3/core/simulator/entity/embodied_entity.h>
 #include <argos3/plugins/simulator/entities/battery_equipped_entity.h>
+#include <argos3/plugins/simulator/entities/rab_equipped_entity.h>
+#include <argos3/plugins/simulator/entities/proximity_sensor_equipped_entity.h>
 
 namespace argos {
+
+   static const Real RAB_ELEVATION                         = 0.164f;
+   static const Real BODY_RADIUS                           = 0.30;
+   static const Real PROXIMITY_SENSOR_RING_ELEVATION       = 0.06f;
+   static const Real PROXIMITY_SENSOR_RING_RADIUS          = BODY_RADIUS;
+   static const CRadians PROXIMITY_SENSOR_RING_START_ANGLE = CRadians::ZERO;
+   static const Real PROXIMITY_SENSOR_RING_RANGE           = 1.0f;
 
    /****************************************/
    /****************************************/
 
    CLeoEntity::CLeoEntity() :
-      CComposableEntity(NULL),
-      m_pcControllableEntity(NULL),
-      m_pcEmbodiedEntity(NULL),
-      m_pcBatteryEquippedEntity(NULL) {
+      CComposableEntity(nullptr),
+      m_pcControllableEntity(nullptr),
+      m_pcEmbodiedEntity(nullptr),
+      m_pcBatteryEquippedEntity(nullptr),
+      m_pcProximitySensorEquippedEntity(nullptr) {
    }
 
    /****************************************/
@@ -31,11 +41,14 @@ namespace argos {
                           const std::string& str_controller_id,
                           const CVector3& c_position,
                           const CQuaternion& c_orientation,
+                          Real f_rab_range,
+                          size_t un_rab_data_size,
                           const std::string& str_bat_model) :
-      CComposableEntity(NULL, str_id),
-      m_pcControllableEntity(NULL),
-      m_pcEmbodiedEntity(NULL),
-      m_pcBatteryEquippedEntity(NULL) {
+      CComposableEntity(nullptr, str_id),
+      m_pcControllableEntity(nullptr),
+      m_pcEmbodiedEntity(nullptr),
+      m_pcBatteryEquippedEntity(nullptr),
+      m_pcProximitySensorEquippedEntity(nullptr) {
       try {
          /*
           * Create and init components
@@ -46,6 +59,27 @@ namespace argos {
          /* Battery equipped entity */
          m_pcBatteryEquippedEntity = new CBatteryEquippedEntity(this, "battery_0", str_bat_model);
          AddComponent(*m_pcBatteryEquippedEntity);
+         /* RAB equipped entity */
+         m_pcRABEquippedEntity =
+            new CRABEquippedEntity(this,
+                                   "rab_0",
+                                   un_rab_data_size,
+                                   f_rab_range,
+                                   m_pcEmbodiedEntity->GetOriginAnchor(),
+                                   *m_pcEmbodiedEntity,
+                                   CVector3(0.0f, 0.0f, RAB_ELEVATION));
+         AddComponent(*m_pcRABEquippedEntity);
+         /* Proximity sensor equipped entity */
+         m_pcProximitySensorEquippedEntity =
+            new CProximitySensorEquippedEntity(this, "proximity_0");
+         AddComponent(*m_pcProximitySensorEquippedEntity);
+         m_pcProximitySensorEquippedEntity->AddSensorRing(
+            CVector3(0.0f, 0.0f, PROXIMITY_SENSOR_RING_ELEVATION),
+            PROXIMITY_SENSOR_RING_RADIUS,
+            PROXIMITY_SENSOR_RING_START_ANGLE,
+            PROXIMITY_SENSOR_RING_RANGE,
+            24,
+            m_pcEmbodiedEntity->GetOriginAnchor());
          /* Controllable entity
             It must be the last one, for actuators/sensors to link to composing entities correctly
          */
@@ -81,6 +115,31 @@ namespace argos {
          if(NodeExists(t_tree, "battery"))
             m_pcBatteryEquippedEntity->Init(GetNode(t_tree, "battery"));
          AddComponent(*m_pcBatteryEquippedEntity);
+         /* RAB equipped entity */
+         Real fRange = 3.0f;
+         GetNodeAttributeOrDefault(t_tree, "rab_range", fRange, fRange);
+         UInt32 unDataSize = 10;
+         GetNodeAttributeOrDefault(t_tree, "rab_data_size", unDataSize, unDataSize);
+         m_pcRABEquippedEntity =
+            new CRABEquippedEntity(this,
+                                   "rab_0",
+                                   unDataSize,
+                                   fRange,
+                                   m_pcEmbodiedEntity->GetOriginAnchor(),
+                                   *m_pcEmbodiedEntity,
+                                   CVector3(0.0f, 0.0f, RAB_ELEVATION));
+         AddComponent(*m_pcRABEquippedEntity);
+         /* Proximity sensor equipped entity */
+         m_pcProximitySensorEquippedEntity =
+            new CProximitySensorEquippedEntity(this, "proximity_0");
+         AddComponent(*m_pcProximitySensorEquippedEntity);
+         m_pcProximitySensorEquippedEntity->AddSensorRing(
+            CVector3(0.0f, 0.0f, PROXIMITY_SENSOR_RING_ELEVATION),
+            PROXIMITY_SENSOR_RING_RADIUS,
+            PROXIMITY_SENSOR_RING_START_ANGLE,
+            PROXIMITY_SENSOR_RING_RANGE,
+            24,
+            m_pcEmbodiedEntity->GetOriginAnchor());
          /* Controllable entity
             It must be the last one, for actuators/sensors to link to composing entities correctly */
          m_pcControllableEntity = new CControllableEntity(this);
