@@ -84,7 +84,13 @@ namespace argos {
    /****************************************/
 
    void CDynamics2DLeoModel::UpdateFromEntityStatus() {
-      m_cVelocityControl.SetLinearVelocity(CVector2(m_cLeoEntity.GetLinearVelocity(), 0.0));
+      argos::CRadians rot_z, rot_x, rot_y;
+      m_cLeoEntity.GetEmbodiedEntity().GetOriginAnchor().Orientation.ToEulerAngles(rot_z, rot_y, rot_x);
+
+      Real vel_x = cos(rot_z.GetValue())*m_cLeoEntity.GetLinearVelocity();
+      Real vel_y = sin(rot_z.GetValue())*m_cLeoEntity.GetLinearVelocity();
+      
+      m_cVelocityControl.SetLinearVelocity(CVector2(vel_x, vel_y));
       m_cVelocityControl.SetAngularVelocity(m_cLeoEntity.GetAngularVelocity().GetValue());
    }
 
