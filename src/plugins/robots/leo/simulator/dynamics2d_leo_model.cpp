@@ -87,8 +87,8 @@ namespace argos {
       argos::CRadians fRotationZ, fRotationX, fRotationY;
       m_cLeoEntity.GetEmbodiedEntity().GetOriginAnchor().Orientation.ToEulerAngles(fRotationZ, fRotationY, fRotationX);
 
-      Real fVelX = cos(fRotationZ.GetValue())*m_cLeoEntity.GetLinearVelocity();
-      Real fVelY = sin(fRotationZ.GetValue())*m_cLeoEntity.GetLinearVelocity();
+      argos::Real fVelX = argos::Cos(fRotationZ)*m_cLeoEntity.GetLinearVelocity();
+      argos::Real fVelY = argos::Sin(fRotationZ)*m_cLeoEntity.GetLinearVelocity();
       
       m_cVelocityControl.SetLinearVelocity(CVector2(fVelX, fVelY));
       m_cVelocityControl.SetAngularVelocity(m_cLeoEntity.GetAngularVelocity().GetValue());
