@@ -70,7 +70,8 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
     simulator/dynamics2d_leo_model.cpp
     simulator/leo_entity.cpp
     simulator/leo_measures.cpp
-    simulator/leo_posetwist_default_actuator.cpp)
+    simulator/leo_posetwist_default_actuator.cpp
+    simulator/leo_posetwist_ros_actuator.cpp)
   # Compile the graphical visualization only if the necessary libraries have been found
   if(ARGOS_QTOPENGL_FOUND)
     include_directories(${ARGOS_QTOPENGL_INCLUDE_DIRS})
