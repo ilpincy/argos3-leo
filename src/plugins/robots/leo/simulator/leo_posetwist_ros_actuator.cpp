@@ -2,6 +2,9 @@
 #include <argos3/core/utility/logging/argos_log.h>
 
 namespace argos {
+    CLeoPoseTwistRosActuator::CLeoPoseTwistRosActuator() : cmd_vel_pub(nullptr)
+    {
+    }
 
     void argos::CLeoPoseTwistRosActuator::SetRobot(CComposableEntity &c_entity)
     {
@@ -13,13 +16,14 @@ namespace argos {
         CLeoPoseTwistDefaultActuator::Init(t_tree);
 
         // Initialize ROS node
+        LOG << "[INFO] Initializing ROS..." << std::endl;
         int argc = 0;
         char** argv = nullptr;
         ros::init(argc, argv, "leo_posetwist_ros_actuator");
-        ros::NodeHandle nh;
-
-        // Create publisher if ROS connection was successful
         if (ros::master::check()) {
+            ros::NodeHandle nh;
+
+            // Create publisher if ROS connection was successful
             cmd_vel_pub = std::make_shared<ros::Publisher>(nh.advertise<geometry_msgs::Twist>("cmd_vel", 10));
         } else {
             LOG << "[INFO] Could not connect to ROS" << std::endl;
@@ -47,7 +51,7 @@ namespace argos {
             geometry_msgs::Twist vel_msg;
 
             // Set linear velocity
-            vel_msg.linear.x = m_fDesiredLinearVelocity;
+            vel_msg.linear.x = m_fDesiredLinearVelocity; // Scaling this down for testing
             vel_msg.linear.y = 0.0;
             vel_msg.linear.z = 0.0;
 

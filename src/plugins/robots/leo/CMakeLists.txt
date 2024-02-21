@@ -23,7 +23,8 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
     simulator/dynamics2d_leo_model.h
     simulator/leo_entity.h
     simulator/leo_measures.h
-    simulator/leo_posetwist_default_actuator.h)
+    simulator/leo_posetwist_default_actuator.h
+    simulator/leo_posetwist_ros_actuator.h)
 endif(ARGOS_BUILD_FOR_SIMULATOR)
 # argos3/plugins/robots/leo/real_robot
 # if(ARGOS_BUILD_FOR STREQUAL "leo")
