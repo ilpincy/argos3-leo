@@ -51,7 +51,7 @@ namespace argos {
             geometry_msgs::Twist vel_msg;
 
             // Set linear velocity
-            vel_msg.linear.x = m_fDesiredLinearVelocity; // Scaling this down for testing
+            vel_msg.linear.x = m_fDesiredLinearVelocity / 10; // Scaling this down for testing
             vel_msg.linear.y = 0.0;
             vel_msg.linear.z = 0.0;
 
