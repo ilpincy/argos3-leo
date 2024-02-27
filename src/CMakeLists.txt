@@ -53,6 +53,7 @@ include(${CMAKE_SOURCE_DIR}/cmake/ARGoSBuildFlags.cmake)
 # Check for libraries
 #
 include(${CMAKE_SOURCE_DIR}/cmake/ARGoSBuildChecks.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/ROSBuildChecks.cmake)
 
 #
 # Set up CPack for later use
