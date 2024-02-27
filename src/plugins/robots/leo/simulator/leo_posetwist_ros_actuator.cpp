@@ -23,8 +23,13 @@ namespace argos {
         if (ros::master::check()) {
             ros::NodeHandle nh;
 
+            std::string rosPrefix(m_pcLeoEntity->GetId());
+            if (rosPrefix == "0") {
+                rosPrefix = "main";
+            }
+
             // Create publisher if ROS connection was successful
-            cmd_vel_pub = std::make_shared<ros::Publisher>(nh.advertise<geometry_msgs::Twist>("cmd_vel", 10));
+            cmd_vel_pub = std::make_shared<ros::Publisher>(nh.advertise<geometry_msgs::Twist>("/leo_" + rosPrefix + "/cmd_vel", 10));
         } else {
             LOG << "[INFO] Could not connect to ROS" << std::endl;
             cmd_vel_pub = nullptr;
