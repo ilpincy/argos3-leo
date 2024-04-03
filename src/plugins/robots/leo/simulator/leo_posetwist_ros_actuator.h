@@ -15,13 +15,7 @@ namespace argos {
    class CLeoPoseTwistROSActuator;
 }
 
-#include <argos3/core/utility/math/rng.h>
-#include <argos3/core/simulator/actuator.h>
-#include <argos3/core/simulator/entity/composable_entity.h>
-#include <argos3/plugins/robots/leo/control_interface/ci_leo_posetwist_actuator.h>
-#include <argos3/plugins/robots/leo/simulator/leo_entity.h>
-#include "leo_posetwist_default_actuator.h"
-
+#include <argos3/plugins/robots/leo/simulator/leo_posetwist_default_actuator.h>
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 

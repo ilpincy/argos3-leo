@@ -1,3 +1,9 @@
+/**
+ * @file <argos3/plugins/robots/leo/simulator/leo_posetwist_ros_actuator.cpp>
+ *
+ * @author Steve Marotta - <smarotta@cra.com>
+ */
+
 #include "leo_posetwist_ros_actuator.h"
 #include <argos3/core/utility/logging/argos_log.h>
 
@@ -14,9 +20,8 @@ namespace argos {
 
    void CLeoPoseTwistROSActuator::Init(TConfigurationNode &t_tree) {
       CLeoPoseTwistDefaultActuator::Init(t_tree);
-
       /* Initialize ROS node */
-      LOG << "[INFO] Initializing ROS..." << std::endl;
+      LOG << "[INFO] CLeoPoseTwistROSActuator: Initializing ROS..." << std::endl;
       int argc = 0;
       char** argv = nullptr;
       ros::init(argc, argv, "leo_posetwist_ros_actuator");
@@ -30,10 +35,13 @@ namespace argos {
          m_pcCmdVelPub = std::make_shared<ros::Publisher>(
             cNH.advertise<geometry_msgs::Twist>(
                "/leo_" + strROSPrefix + "/cmd_vel", 10));
+         LOG << "[INFO] CLeoPoseTwistROSActuator: ROS Successfully Initialized" << std::endl;
       } else {
-         LOG << "[INFO] Could not connect to ROS" << std::endl;
+         LOGERR << "[INFO] Could not connect to ROS" << std::endl;
          m_pcCmdVelPub = nullptr;
       }
+      LOG.Flush();
+      LOGERR.Flush();
    }
 
    /****************************************/
