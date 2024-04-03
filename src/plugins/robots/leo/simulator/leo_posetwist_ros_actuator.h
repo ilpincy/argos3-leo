@@ -12,7 +12,7 @@
 #include <memory>
 
 namespace argos {
-   class CLeoPoseTwistRosActuator;
+   class CLeoPoseTwistROSActuator;
 }
 
 #include <argos3/core/utility/math/rng.h>
@@ -27,26 +27,18 @@ namespace argos {
 
 namespace argos {
    
-   class CLeoPoseTwistRosActuator : public CLeoPoseTwistDefaultActuator {
+   class CLeoPoseTwistROSActuator : public CLeoPoseTwistDefaultActuator {
 
    public:
 
-      CLeoPoseTwistRosActuator();
-      virtual ~CLeoPoseTwistRosActuator() {}
-
-      virtual void SetRobot(CComposableEntity& c_entity);
-
+      CLeoPoseTwistROSActuator();
+      virtual ~CLeoPoseTwistROSActuator() {}
       virtual void Init(TConfigurationNode& t_tree);
-
-      virtual void SetLinearVelocity(Real f_velocity);
-      virtual void SetAngularVelocity(const CRadians& c_velocity);
-
       virtual void Update();
-      virtual void Reset();
 
    protected:
 
-      std::shared_ptr<ros::Publisher> cmd_vel_pub;
+      std::shared_ptr<ros::Publisher> m_pcCmdVelPub;
 
    };
 

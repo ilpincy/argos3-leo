@@ -2,93 +2,76 @@
 #include <argos3/core/utility/logging/argos_log.h>
 
 namespace argos {
-    CLeoPoseTwistRosActuator::CLeoPoseTwistRosActuator() : cmd_vel_pub(nullptr)
-    {
-    }
+   
+   /****************************************/
+   /****************************************/
 
-    void argos::CLeoPoseTwistRosActuator::SetRobot(CComposableEntity &c_entity)
-    {
-        CLeoPoseTwistDefaultActuator::SetRobot(c_entity);
-    }
+   CLeoPoseTwistROSActuator::CLeoPoseTwistROSActuator() :
+      m_pcCmdVelPub(nullptr) {}
 
-    void argos::CLeoPoseTwistRosActuator::Init(TConfigurationNode &t_tree)
-    {
-        CLeoPoseTwistDefaultActuator::Init(t_tree);
+   /****************************************/
+   /****************************************/
 
-        // Initialize ROS node
-        LOG << "[INFO] Initializing ROS..." << std::endl;
-        int argc = 0;
-        char** argv = nullptr;
-        ros::init(argc, argv, "leo_posetwist_ros_actuator");
-        if (ros::master::check()) {
-            ros::NodeHandle nh;
+   void CLeoPoseTwistROSActuator::Init(TConfigurationNode &t_tree) {
+      CLeoPoseTwistDefaultActuator::Init(t_tree);
 
-            std::string rosPrefix(m_pcLeoEntity->GetId());
-            if (rosPrefix == "0") {
-                rosPrefix = "main";
-            }
+      /* Initialize ROS node */
+      LOG << "[INFO] Initializing ROS..." << std::endl;
+      int argc = 0;
+      char** argv = nullptr;
+      ros::init(argc, argv, "leo_posetwist_ros_actuator");
+      if (ros::master::check()) {
+         ros::NodeHandle cNH;
+         std::string strROSPrefix(m_pcLeoEntity->GetId());
+         if (strROSPrefix == "0") {
+            strROSPrefix = "main";
+         }
+         /* Create publisher if ROS connection was successful */
+         m_pcCmdVelPub = std::make_shared<ros::Publisher>(
+            cNH.advertise<geometry_msgs::Twist>(
+               "/leo_" + strROSPrefix + "/cmd_vel", 10));
+      } else {
+         LOG << "[INFO] Could not connect to ROS" << std::endl;
+         m_pcCmdVelPub = nullptr;
+      }
+   }
 
-            // Create publisher if ROS connection was successful
-            cmd_vel_pub = std::make_shared<ros::Publisher>(nh.advertise<geometry_msgs::Twist>("/leo_" + rosPrefix + "/cmd_vel", 10));
-        } else {
-            LOG << "[INFO] Could not connect to ROS" << std::endl;
-            cmd_vel_pub = nullptr;
-        }
-    }
+   /****************************************/
+   /****************************************/
 
-    void argos::CLeoPoseTwistRosActuator::SetLinearVelocity(Real f_velocity)
-    {
-        CLeoPoseTwistDefaultActuator::SetLinearVelocity(f_velocity);
-    }
+   void CLeoPoseTwistROSActuator::Update() {
+      CLeoPoseTwistDefaultActuator::Update();
+      if (m_pcCmdVelPub != nullptr) {
+         /* Create a Twist message to send to ROS */
+         geometry_msgs::Twist cVelMsg;
+         /* Set linear velocity */
+         cVelMsg.linear.x = m_fDesiredLinearVelocity / 10.0; // Scaling this down for testing
+         cVelMsg.linear.y = 0.0;
+         cVelMsg.linear.z = 0.0;
+         /* Set angular velocity */
+         cVelMsg.angular.x = 0.0;
+         cVelMsg.angular.y = 0.0;
+         cVelMsg.angular.z = m_cDesiredAngularVelocity.GetValue();
+         /* Publish the message */
+         m_pcCmdVelPub->publish(cVelMsg);
+      }
 
-    void argos::CLeoPoseTwistRosActuator::SetAngularVelocity(const CRadians &c_velocity)
-    {
-        CLeoPoseTwistDefaultActuator::SetAngularVelocity(c_velocity);
-    }
+   }
 
-    void argos::CLeoPoseTwistRosActuator::Update()
-    {
-        CLeoPoseTwistDefaultActuator::Update();
-
-        if (cmd_vel_pub != nullptr) {
-
-            // Create a Twist message to send to ROS
-            geometry_msgs::Twist vel_msg;
-
-            // Set linear velocity
-            vel_msg.linear.x = m_fDesiredLinearVelocity / 10; // Scaling this down for testing
-            vel_msg.linear.y = 0.0;
-            vel_msg.linear.z = 0.0;
-
-            // Set angular velocity
-            vel_msg.angular.x = 0.0;
-            vel_msg.angular.y = 0.0;
-            vel_msg.angular.z = m_cDesiredAngularVelocity.GetValue();
-
-            // Publish the message
-            cmd_vel_pub->publish(vel_msg);
-        }
-
-    }
-
-    void argos::CLeoPoseTwistRosActuator::Reset()
-    {
-        CLeoPoseTwistDefaultActuator::Reset();
-    }
+   /****************************************/
+   /****************************************/
 
 }
 
-REGISTER_ACTUATOR(CLeoPoseTwistRosActuator,
+REGISTER_ACTUATOR(CLeoPoseTwistROSActuator,
                   "leo_posetwist", "ros",
-                  "Carlo Pinciroli [ilpincy@gmail.com]",
+                  "Steve Marotta [smarotta@cra.com]",
                   "1.0",
                   "The leo posetwist actuator.",
                   "This actuator controls the posetwist of a leo robot. For a\n"
                   "complete description of its usage, refer to the\n"
                   "ci_leo_posetwist_actuator.h file.\n\n"
-
                   "REQUIRED XML CONFIGURATION\n\n"
-
                   "  <controllers>\n"
                   "    ...\n"
                   "    <my_controller ...>\n"
@@ -102,10 +85,7 @@ REGISTER_ACTUATOR(CLeoPoseTwistRosActuator,
                   "    </my_controller>\n"
                   "    ...\n"
                   "  </controllers>\n\n"
-
                   "OPTIONAL XML CONFIGURATION\n\n"
-
-                  "None.\n\n"
-                  ,
+                  "None.\n\n",
                   "Usable"
    );
