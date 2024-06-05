@@ -10,10 +10,17 @@ CTestController::CTestController() {}
 void CTestController::Init(TConfigurationNode& t_node) {
 
    leoPoseTwistActuator = GetActuator<CCI_LeoPoseTwistActuator>("leo_posetwist");
+   leoOdometrySensor = GetSensor<CCI_LeoOdometrySensor>("leo_odometry");
 }
 
 void CTestController::ControlStep() {
-    leoPoseTwistActuator->SetLinearVelocity(1.0);
+   static int counter = 0;
+   if(counter == 0)
+      leoPoseTwistActuator->SetLinearVelocity(1.0);
+   if(counter >= 20)
+      leoPoseTwistActuator->SetLinearVelocity(0.0);
+   std::cout<<"Odometry readings: X:"<<leoOdometrySensor->GetReading().Position.GetX()<<"  Y:"<<leoOdometrySensor->GetReading().Position.GetY()<<"  Z:"<<leoOdometrySensor->GetReading().Position.GetZ()<<"  "<<std::endl;
+   ++counter;
 }
 
 REGISTER_CONTROLLER(CTestController, "test_controller")
