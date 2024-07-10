@@ -1,19 +1,19 @@
 /* Include the controller definition */
-#include "TestController.h"
+#include "LeoTestController.h"
 /* Function definitions for XML parsing */
 #include <argos3/core/utility/configuration/argos_configuration.h>
 /* 2D vector definition */
 #include <argos3/core/utility/math/vector2.h>
 
-CTestController::CTestController() {}
+CLeoTestController::CLeoTestController() {}
 
-void CTestController::Init(TConfigurationNode& t_node) {
+void CLeoTestController::Init(TConfigurationNode& t_node) {
 
    leoPoseTwistActuator = GetActuator<CCI_LeoPoseTwistActuator>("leo_posetwist");
    leoOdometrySensor = GetSensor<CCI_LeoOdometrySensor>("leo_odometry");
 }
 
-void CTestController::ControlStep() {
+void CLeoTestController::ControlStep() {
    static int counter = 0;
    if(counter == 0)
       leoPoseTwistActuator->SetLinearVelocity(1.0);
@@ -23,4 +23,4 @@ void CTestController::ControlStep() {
    ++counter;
 }
 
-REGISTER_CONTROLLER(CTestController, "test_controller")
+REGISTER_CONTROLLER(CLeoTestController, "leo_test_controller")
