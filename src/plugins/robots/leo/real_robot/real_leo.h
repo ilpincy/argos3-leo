@@ -3,7 +3,10 @@
 
 #include <argos3/core/real_robot/real_robot.h>
 #include <argos3/plugins/robots/leo/real_robot/real_leo_device.h>
+#ifdef catkin_FOUND
 #include <ros/ros.h>
+#endif // catkin_FOUND
+
 
 using namespace argos;
 
@@ -22,7 +25,9 @@ public:
 
 private:
 
+#ifdef catkin_FOUND
    ros::NodeHandle* m_pcNodeHandle;
+#endif // catkin_FOUND
 
    std::vector<CRealLeoDevice*> m_vecActuators;
    std::vector<CRealLeoDevice*> m_vecSensors;
