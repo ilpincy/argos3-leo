@@ -46,4 +46,4 @@ namespace argos {
 
 }
 
-#endif
+#endif // CI_LEO_WIFI_ACTUATOR_H

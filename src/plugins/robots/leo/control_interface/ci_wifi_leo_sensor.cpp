@@ -1,11 +1,11 @@
-#include "ci_leo_wifi_actuator.h"
+#include "ci_leo_wifi_sensor.h"
 
 namespace argos {
 
    /****************************************/
    /****************************************/
    
-   void CCI_LeoWiFiActuator::CreateLuaState(lua_State* pt_lua_state) {
+   void CCI_LeoWiFiSensor::CreateLuaState(lua_State* pt_lua_state) {
       // TODO
    }
 

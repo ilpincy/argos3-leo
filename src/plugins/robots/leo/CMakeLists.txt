@@ -4,8 +4,9 @@
 # argos3/plugins/robots/leo/control_interface
 set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE
   control_interface/ci_leo_posetwist_actuator.h
-  control_interface/ci_leo_wifi_actuator.h
   control_interface/ci_leo_odometry_sensor.h
+  control_interface/ci_leo_wifi_actuator.h
+  control_interface/ci_leo_wifi_sensor.h
 )
 # argos3/plugins/robots/leo/simulator
 if(ARGOS_BUILD_FOR_SIMULATOR)
@@ -32,8 +33,9 @@ endif(ARGOS_BUILD_FOR STREQUAL "leo")
 set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
   ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE}
   control_interface/ci_leo_posetwist_actuator.cpp
-  control_interface/ci_leo_wifi_actuator.cpp
   control_interface/ci_leo_odometry_sensor.cpp
+  control_interface/ci_leo_wifi_actuator.cpp
+  control_interface/ci_leo_wifi_sensor.cpp
 )
 
 if(ARGOS_BUILD_FOR_SIMULATOR)
