@@ -15,14 +15,14 @@
   <!-- * Controllers * -->
   <!-- *************** -->
   <controllers>
-    <test_controller id="mycntrl" library="build_sim/testing/libtest_controller">
+    <sim_test_controller id="mycntrl" library="build/testing/libsim_test_controller">
         <params alpha="7.5" delta="0.1" velocity="5" />
         <actuators>
         <leo_posetwist implementation="default"/>
         </actuators>
         <sensors>
         </sensors>
-    </test_controller>
+    </sim_test_controller>
   </controllers>
 
   <!-- *********************** -->

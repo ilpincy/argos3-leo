@@ -5,6 +5,7 @@
 set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE
   control_interface/ci_leo_posetwist_actuator.h
   control_interface/ci_leo_wifi_actuator.h
+  control_interface/ci_leo_odometry_sensor.h
 )
 # argos3/plugins/robots/leo/simulator
 if(ARGOS_BUILD_FOR_SIMULATOR)
@@ -16,22 +17,14 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
     simulator/leo_posetwist_ros_actuator.h)
 endif(ARGOS_BUILD_FOR_SIMULATOR)
 # argos3/plugins/robots/leo/real_robot
-# if(ARGOS_BUILD_FOR STREQUAL "leo")
-#   set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT
-#     real_robot/real_leo.h
-#     real_robot/real_leo_device.h
-#     real_robot/real_leo_differential_steering_device.h
-#     real_robot/real_leo_differential_steering_actuator.h
-#     real_robot/real_leo_gripper_actuator.h
-#     real_robot/real_leo_leds_actuator.h
-#     real_robot/real_leo_battery_sensor.h
-#     real_robot/real_leo_camera_sensor.h
-#     real_robot/real_leo_encoder_sensor.h
-#     real_robot/real_leo_ground_sensor.h
-#     real_robot/real_leo_lidar_sensor.h
-#     real_robot/real_leo_proximity_sensor.h
-#     real_robot/real_leo_ultrasound_sensor.h)
-# endif(ARGOS_BUILD_FOR STREQUAL "leo")
+if(ARGOS_BUILD_FOR STREQUAL "leo")
+  set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT
+    real_robot/real_leo.h
+    real_robot/real_leo_device.h
+    real_robot/real_leo_posetwist_actuator.h
+    real_robot/real_leo_odometry_sensor.h
+  )
+endif(ARGOS_BUILD_FOR STREQUAL "leo")
 
 #
 # leo sources
@@ -40,6 +33,7 @@ set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
   ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE}
   control_interface/ci_leo_posetwist_actuator.cpp
   control_interface/ci_leo_wifi_actuator.cpp
+  control_interface/ci_leo_odometry_sensor.cpp
 )
 
 if(ARGOS_BUILD_FOR_SIMULATOR)
@@ -63,24 +57,15 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
       simulator/qtopengl_leo.cpp)
   endif(ARGOS_QTOPENGL_FOUND)
 endif(ARGOS_BUILD_FOR_SIMULATOR)
-# if(ARGOS_BUILD_FOR STREQUAL "leo")
-#   set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
-#     ${ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO}
-#     ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT}
-#     real_robot/real_leo.cpp
-#     real_robot/real_leo_device.cpp
-#     real_robot/real_leo_differential_steering_device.cpp
-#     real_robot/real_leo_differential_steering_actuator.cpp
-#     real_robot/real_leo_gripper_actuator.cpp
-#     real_robot/real_leo_leds_actuator.cpp
-#     real_robot/real_leo_battery_sensor.cpp
-#     real_robot/real_leo_camera_sensor.cpp
-#     real_robot/real_leo_encoder_sensor.cpp
-#     real_robot/real_leo_ground_sensor.cpp
-#     real_robot/real_leo_lidar_sensor.cpp
-#     real_robot/real_leo_proximity_sensor.cpp
-#     real_robot/real_leo_ultrasound_sensor.cpp)
-# endif(ARGOS_BUILD_FOR STREQUAL "leo")
+if(ARGOS_BUILD_FOR STREQUAL "leo")
+  set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
+    ${ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO}
+    ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT}
+    real_robot/real_leo.cpp
+    real_robot/real_leo_posetwist_actuator.cpp
+    real_robot/real_leo_odometry_sensor.cpp
+  )
+endif(ARGOS_BUILD_FOR STREQUAL "leo")
 
 #
 # Create leo plugin
@@ -95,7 +80,8 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
     target_link_libraries(argos3plugin_${ARGOS_BUILD_FOR}_leo argos3plugin_${ARGOS_BUILD_FOR}_qtopengl)
   endif(ARGOS_QTOPENGL_FOUND)
 else(ARGOS_BUILD_FOR_SIMULATOR)
-  target_link_libraries(argos3plugin_${ARGOS_BUILD_FOR}_leo -lleo)
+  # TODO Add ROS here
+  target_link_libraries(argos3plugin_${ARGOS_BUILD_FOR}_leo)
 endif(ARGOS_BUILD_FOR_SIMULATOR)
 if(BUZZ_FOUND)
   target_link_libraries(argos3plugin_${ARGOS_BUILD_FOR}_leo argos3plugin_${ARGOS_BUILD_FOR}_buzz ${BUZZ_LIBRARY})

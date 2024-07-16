@@ -1,5 +1,5 @@
-#ifndef TEST_CONTROLLER_H
-#define TEST_CONTROLLER_H
+#ifndef SIM_TEST_CONTROLLER_H
+#define SIM_TEST_CONTROLLER_H
 
 /* Definition of the CCI_Controller class. */
 #include <argos3/core/control_interface/ci_controller.h>
@@ -7,14 +7,14 @@
 
 using namespace argos;
 
-class CTestController : public CCI_Controller {
+class CSimTestController : public CCI_Controller {
 
 public:
    /* Class constructor. */
-   CTestController();
+   CSimTestController();
 
    /* Class destructor. */
-   virtual ~CTestController() {}
+   virtual ~CSimTestController() {}
    /*
     * This function initializes the controller.
     * The 't_node' variable points to the <parameters> section in the XML
