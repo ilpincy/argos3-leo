@@ -22,6 +22,7 @@
       </actuators>
       <sensors>
         <leo_odometry implementation="default"/>
+        <leo_tag implementation="default"/>
       </sensors>
     </leo_test_controller>
   </controllers>

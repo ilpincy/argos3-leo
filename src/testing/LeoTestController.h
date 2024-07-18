@@ -5,6 +5,7 @@
 #include <argos3/core/control_interface/ci_controller.h>
 #include <argos3/plugins/robots/leo/control_interface/ci_leo_posetwist_actuator.h>
 #include <argos3/plugins/robots/leo/control_interface/ci_leo_odometry_sensor.h>
+#include <argos3/plugins/robots/leo/control_interface/ci_leo_tag_sensor.h>
 
 using namespace argos;
 
@@ -51,6 +52,7 @@ public:
 
     CCI_LeoPoseTwistActuator* leoPoseTwistActuator;
     CCI_LeoOdometrySensor* leoOdometrySensor;
+    CCI_LeoTagSensor* leoTagSensor;
 
 };
 

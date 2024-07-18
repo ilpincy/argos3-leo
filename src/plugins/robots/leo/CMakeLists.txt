@@ -5,6 +5,7 @@
 set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE
   control_interface/ci_leo_posetwist_actuator.h
   control_interface/ci_leo_odometry_sensor.h
+  control_interface/ci_leo_tag_sensor.h
 )
 # if(BUZZ_FOUND)
 #   set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE
@@ -27,6 +28,7 @@ if(ARGOS_BUILD_FOR STREQUAL "leo")
     real_robot/real_leo_device.h
     real_robot/real_leo_posetwist_actuator.h
     real_robot/real_leo_odometry_sensor.h
+    real_robot/real_leo_tag_sensor.h
   )
 endif(ARGOS_BUILD_FOR STREQUAL "leo")
 
@@ -37,6 +39,7 @@ set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
   ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE}
   control_interface/ci_leo_posetwist_actuator.cpp
   control_interface/ci_leo_odometry_sensor.cpp
+  control_interface/ci_leo_tag_sensor.cpp
 )
 # if(BUZZ_FOUND)
 #   set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
@@ -72,6 +75,7 @@ if(ARGOS_BUILD_FOR STREQUAL "leo")
     real_robot/real_leo.cpp
     real_robot/real_leo_posetwist_actuator.cpp
     real_robot/real_leo_odometry_sensor.cpp
+    real_robot/real_leo_tag_sensor.cpp
   )
 endif(ARGOS_BUILD_FOR STREQUAL "leo")
 

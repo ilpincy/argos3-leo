@@ -3,6 +3,7 @@ find_package(
   roscpp
   geometry_msgs
   nav_msgs
+  ar_track_alvar_msgs
 )
 include_directories(
   ${catkin_INCLUDE_DIRS}

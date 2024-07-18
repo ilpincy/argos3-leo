@@ -1,6 +1,7 @@
 #include "real_leo.h"
 #include "real_leo_posetwist_actuator.h"
 #include "real_leo_odometry_sensor.h"
+#include "real_leo_tag_sensor.h"
 #include <argos3/core/utility/logging/argos_log.h>
 
 CRealLeo::CRealLeo() :
@@ -52,6 +53,12 @@ CCI_Actuator* CRealLeo::MakeActuator(const std::string& str_name) {
 CCI_Sensor* CRealLeo::MakeSensor(const std::string& str_name) {
    if(str_name == "leo_odometry") {
       CRealLeoOdometrySensor* pcSensor = new CRealLeoOdometrySensor(*m_pcNodeHandle);
+      m_vecSensors.push_back(pcSensor);
+      LOG << "[INFO] Successfully initialized sensor \"" << str_name << std::endl;
+      return pcSensor;
+   }
+   else if(str_name == "leo_tag") {
+      CRealLeoTagSensor* pcSensor = new CRealLeoTagSensor(*m_pcNodeHandle);
       m_vecSensors.push_back(pcSensor);
       LOG << "[INFO] Successfully initialized sensor \"" << str_name << std::endl;
       return pcSensor;
