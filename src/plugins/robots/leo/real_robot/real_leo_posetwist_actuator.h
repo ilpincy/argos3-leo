@@ -2,7 +2,7 @@
 #define REAL_LEO_POSETWIST_ACTUATOR_H
 
 #include <argos3/plugins/robots/leo/control_interface/ci_leo_posetwist_actuator.h>
-#include <argos3/plugins/robots/leo/real_robot/real_leo_device.h>
+#include <argos3/plugins/robots/leo/real_robot/real_leo_ros_device.h>
 #include <argos3/core/utility/math/angles.h>
 #ifdef catkin_FOUND
 #include <ros/ros.h>
@@ -12,7 +12,7 @@ using namespace argos;
 
 class CRealLeoPoseTwistActuator :
    public CCI_LeoPoseTwistActuator,
-   public CRealLeoDevice {
+   public CRealLeoROSDevice {
 
 public:
 

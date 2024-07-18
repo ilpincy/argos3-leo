@@ -9,7 +9,7 @@ class CRealLeoDevice {
 
 public:
 
-   virtual ~CRealLeoDevice() = 0;
+   virtual ~CRealLeoDevice() {}
 
    virtual void Do(Real f_elapsed_time) = 0;
 

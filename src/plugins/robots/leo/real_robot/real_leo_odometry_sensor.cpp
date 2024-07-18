@@ -5,11 +5,11 @@
 /****************************************/
 
 CRealLeoOdometrySensor::CRealLeoOdometrySensor(ros::NodeHandle& c_node_handle) :
-   CRealLeoDevice(c_node_handle) {
+   CRealLeoROSDevice(c_node_handle) {
    m_cSub = c_node_handle.subscribe("/odometry_merged",
-                                   1,
-                                   &CRealLeoOdometrySensor::Update,
-                                   this);
+                                    1,
+                                    &CRealLeoOdometrySensor::Update,
+                                    this);
 }
 
 /****************************************/

@@ -15,9 +15,11 @@ tar cjvf argos3-leo.tar.bz2 --exclude build --exclude .git argos3-leo
 if [[ "x${TARGET}" = "xall" ]]; then
     for LEO in leo1 leo2 leo3; do
         scp argos3-leo.tar.bz2 ${LEO}:~/ARGoS
+        ssh ${LEO} "cd ~/ARGoS && tar xf argos3-leo.tar.bz2"
     done
 else
     scp argos3-leo.tar.bz2 ${TARGET}:~/ARGoS
+    ssh ${TARGET} "cd ~/ARGoS && tar xf argos3-leo.tar.bz2"
 fi
 
 popd
