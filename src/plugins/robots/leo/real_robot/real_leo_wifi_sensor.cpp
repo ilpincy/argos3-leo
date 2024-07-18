@@ -127,10 +127,12 @@ void* CRealLeoWiFiSensor::ListeningThread() {
          /* Receive message */
          DEBUG("Calling recvfrom()...\n");
          ssize_t nRecvd;
+         ssize_t nTotRecvd = 0;
+         ssize_t nBufLeft = 1024;
          do {
             nRecvd = recvfrom(m_nMulticastSocket,
-                              punBuffer,
-                              sizeof(punBuffer),
+                              punBuffer + nTotRecvd,
+                              sizeof(punBuffer) - nBufLeft,
                               0, // flags
                               &tSenderAddr,
                               &tSenderAddrLen);
@@ -141,12 +143,16 @@ void* CRealLeoWiFiSensor::ListeningThread() {
                DEBUG_FUNCTION_EXIT;
                pthread_exit(nullptr);
             }
+            else {
+               nTotRecvd += nRecvd;
+               nBufLeft -= nRecvd;
+            }
          } while(nRecvd > 0);
          /* Add message to queue */
          pthread_mutex_lock(&m_tListeningMutex);
          m_vecMsgQueue.push_back({
                inet_ntoa(reinterpret_cast<sockaddr_in*>(&tSenderAddr)->sin_addr),
-               CByteArray(punBuffer, nRecvd)
+               CByteArray(punBuffer, nTotRecvd)
             });
          pthread_mutex_unlock(&m_tListeningMutex);
       }
