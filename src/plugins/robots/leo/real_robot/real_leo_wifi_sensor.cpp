@@ -156,6 +156,7 @@ void* CRealLeoWiFiSensor::ListeningThread() {
                CByteArray(punBuffer, unPayloadSize)
             });
          pthread_mutex_unlock(&m_tListeningMutex);
+         delete[] punBuffer;
       }
       else if(nReady < 0) {
          /* In case of error, it's fine to exit the thread */
