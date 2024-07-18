@@ -36,24 +36,11 @@ void CRealLeoWiFiActuator::Do(Real f_elapsed_time) {
    for(std::vector<CCI_LeoWiFiSensor::SMessage>::iterator itM = m_vecMsgQueue.begin();
        itM != m_vecMsgQueue.end();
        ++itM) {
-      ssize_t nToSend = itM->Payload.Size();
-      ssize_t nTotSent = 0, nSent;
-      while(nToSend > 0) {
-         nSent = sendto(m_nMulticastSocket,
-                        itM->Payload.ToCArray() + nTotSent,
-                        nToSend,
-                        0,
-                        reinterpret_cast<sockaddr*>(&m_tMulticastAddr),
-                        sizeof(m_tMulticastAddr));
-         if(nSent < 0) {
-            LOGERR << "sendto() in wifi actuator failed" << strerror(errno) << std::endl;
-            break;
-         }
-         else {
-            nTotSent += nSent;
-            nToSend -= nSent;
-         }
-      }
+      /* First, send message size */
+      uint32_t unToSend = itM->Payload.Size();
+      SendDataMultiCast(reinterpret_cast<unsigned char*>(&unToSend), sizeof(unToSend));
+      /* Second, send message payload */
+      SendDataMultiCast(itM->Payload.ToCArray(), unToSend);
    }
 }
 
@@ -81,3 +68,31 @@ void CRealLeoWiFiActuator::SendToAll(const CByteArray& c_payload) {
 
 /****************************************/
 /****************************************/
+
+ssize_t CRealLeoWiFiActuator::SendDataMultiCast(unsigned char* pt_buf, size_t un_size) {
+   /* Send message payload */
+   ssize_t nToSend = un_size;
+   ssize_t nTotSent = 0;
+   ssize_t nSent;
+   while(nToSend > 0) {
+      nSent = sendto(m_nMulticastSocket,
+                     pt_buf + nTotSent,
+                     nToSend,
+                     0,
+                     reinterpret_cast<sockaddr*>(&m_tMulticastAddr),
+                     sizeof(m_tMulticastAddr));
+      if(nSent < 0) {
+         LOGERR << "sendto() in wifi actuator failed" << strerror(errno) << std::endl;
+         return -1;
+      }
+      else {
+         nTotSent += nSent;
+         nToSend -= nSent;
+      }
+   }
+   return nTotSent;
+}
+
+/****************************************/
+/****************************************/
+

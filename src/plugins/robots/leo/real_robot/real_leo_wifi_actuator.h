@@ -30,6 +30,10 @@ public:
    
 protected:
 
+   ssize_t SendDataMultiCast(unsigned char* pt_buf, size_t un_size);
+
+protected:
+
    int m_nMulticastSocket;
    struct sockaddr_in m_tMulticastAddr;
 
