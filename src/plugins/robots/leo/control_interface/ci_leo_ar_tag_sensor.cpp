@@ -1,10 +1,10 @@
 /**
- * @file <argos3/plugins/robots/leo/control_interface/ci_leo_tag_sensor.cpp>
+ * @file <argos3/plugins/robots/leo/control_interface/ci_leo_ar_tag_sensor.cpp>
  *
  * @author Carlo Pinciroli - <ilpincy@gmail.com>
  */
 
-#include "ci_leo_tag_sensor.h"
+#include "ci_leo_ar_tag_sensor.h"
 
 #ifdef ARGOS_WITH_LUA
 #include <argos3/core/wrappers/lua/lua_utility.h>
@@ -16,7 +16,7 @@ namespace argos {
   /****************************************/
    
 #ifdef ARGOS_WITH_LUA
-  void CCI_LeoTagSensor::CreateLuaState(lua_State* pt_lua_state) {
+  void CCI_LeoArTagSensor::CreateLuaState(lua_State* pt_lua_state) {
     // CLuaUtility::OpenRobotStateTable(pt_lua_state, "wheels");
     // CLuaUtility::AddToTable(pt_lua_state, "distance_left",  m_sReading.CoveredDistanceLeftWheel );
     // CLuaUtility::AddToTable(pt_lua_state, "distance_right", m_sReading.CoveredDistanceRightWheel);
@@ -31,7 +31,7 @@ namespace argos {
   /****************************************/
 
 #ifdef ARGOS_WITH_LUA
-  void CCI_LeoTagSensor::ReadingsToLuaState(lua_State* pt_lua_state) {
+  void CCI_LeoArTagSensor::ReadingsToLuaState(lua_State* pt_lua_state) {
     // lua_getfield  (pt_lua_state, -1, "wheels"                        );
     // lua_pushnumber(pt_lua_state, m_sReading.CoveredDistanceLeftWheel );
     // lua_setfield  (pt_lua_state, -2, "distance_left"                 );
@@ -49,7 +49,7 @@ namespace argos {
   /****************************************/
   /****************************************/
 
-  const CCI_LeoTagSensor::TReadings& CCI_LeoTagSensor::GetReading() const {
+  const CCI_LeoArTagSensor::TReadings& CCI_LeoArTagSensor::GetReading() const {
     return m_tReadings;
   }
 

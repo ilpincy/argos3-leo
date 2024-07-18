@@ -1,18 +1,18 @@
-#ifndef CI_LEO_TAG_SENSOR_H
-#define CI_LEO_TAG_SENSOR_H
+#ifndef CI_LEO_AR_TAG_SENSOR_H
+#define CI_LEO_AR_TAG_SENSOR_H
 
 #include <argos3/core/utility/math/vector3.h>
 #include <argos3/core/utility/math/quaternion.h>
 
 namespace argos {
-   class CCI_LeoTagSensor;
+   class CCI_LeoArTagSensor;
 }
 
 #include <argos3/core/control_interface/ci_sensor.h>
 
 namespace argos {
 
-   class CCI_LeoTagSensor : public CCI_Sensor {
+   class CCI_LeoArTagSensor : public CCI_Sensor {
 
    public:
 
@@ -39,12 +39,12 @@ namespace argos {
       /**
        * Constructor
        */
-      CCI_LeoTagSensor() {}
+      CCI_LeoArTagSensor() {}
 
       /**
        * Destructor
        */
-      virtual ~CCI_LeoTagSensor() {}
+      virtual ~CCI_LeoArTagSensor() {}
 
       /**
        * @brief Returns the reading of the encoder sensor
@@ -65,4 +65,4 @@ namespace argos {
 
 }
 
-#endif // CI_LEO_TAG_SENSOR_H
+#endif // CI_LEO_AR_TAG_SENSOR_H

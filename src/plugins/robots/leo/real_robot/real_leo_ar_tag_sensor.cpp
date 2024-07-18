@@ -1,21 +1,21 @@
-#include "real_leo_tag_sensor.h"
+#include "real_leo_ar_tag_sensor.h"
 #include <argos3/core/utility/math/general.h>
 
 /****************************************/
 /****************************************/
 
-CRealLeoTagSensor::CRealLeoTagSensor(ros::NodeHandle& c_node_handle) :
+CRealLeoArTagSensor::CRealLeoArTagSensor(ros::NodeHandle& c_node_handle) :
    CRealLeoDevice(c_node_handle) {
    c_sub = c_node_handle.subscribe("/ar_pose_marker",
                               1,
-                              &CRealLeoTagSensor::Update,
+                              &CRealLeoArTagSensor::Update,
                               this);
 }
 
 /****************************************/
 /****************************************/
 
-void CRealLeoTagSensor::Update(const ar_track_alvar_msgs::AlvarMarkers& message) {
+void CRealLeoArTagSensor::Update(const ar_track_alvar_msgs::AlvarMarkers& message) {
   m_tReadings.clear();
   for (const auto& single_marker : message.markers) {
     SReading marker;
