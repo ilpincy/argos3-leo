@@ -9,7 +9,7 @@ fi
 pushd ../../../
 
 # Compress the sources and files
-tar cjvf argos3-leo.tar.bz2 --exclude build argos3-leo
+tar cjvf argos3-leo.tar.bz2 --exclude build --exclude .git argos3-leo
 
 # Copy the archive
 if [[ "x${TARGET}" = "xall" ]]; then
