@@ -48,6 +48,15 @@ void CRealLeoWiFiSensor::Init(TConfigurationNode& t_node) {
    struct ip_mreq tIPMReq;
    tIPMReq.imr_multiaddr.s_addr = inet_addr(strMulticastAddr.c_str());
    tIPMReq.imr_interface.s_addr = inet_addr(strInterfaceAddr.c_str());
+   nRes = setsockopt(m_nMulticastSocket,
+                     IPPROTO_IP,
+                     IP_ADD_MEMBERSHIP,
+                     &tIPMReq,
+                     sizeof(tIPMReq));
+   if(nRes < 0) {
+      DEBUG_FUNCTION_EXIT;
+      THROW_ARGOSEXCEPTION("setsockopt() in wifi sensor failed: " << strerror(errno));
+   }
    /* Launch listening thread */
    nRes = pthread_create(&m_tListeningThread,
                          nullptr,
