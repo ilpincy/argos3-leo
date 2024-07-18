@@ -17,11 +17,12 @@
   <controllers>
     <leo_test_communication id="mycntrl" library="build/testing/libleo_test_communication">
       <actuators>
-        <leo_wifi />
+        <leo_wifi multicast_address="239.0.0.20" multicast_port="8888" />
       </actuators>
       <sensors>
-        <leo_wifi wifi_iface="wlan_int" ip_address="" multicast_address="224.0.0.20" multicast_port="8888"/>
+        <leo_wifi multicast_address="239.0.0.20" multicast_port="8888"/>
       </sensors>
+      <params />
     </leo_test_communication>
   </controllers>
 

@@ -8,32 +8,21 @@
 /****************************************/
 
 void CRealLeoWiFiSensor::Init(TConfigurationNode& t_node) {
-   DEBUG_FUNCTION_ENTER;
-   /* Just to test */
-   struct ifaddrs* ptIFAddrs;
-   int nRes2 = getifaddrs(&ptIFAddrs);
-   if(nRes2 < 0) {
-      THROW_ARGOSEXCEPTION("getifaddrs() in wifi sensor failed: " << strerror(errno));
-   }
-   for(struct ifaddrs* i = ptIFAddrs; i; i = i->ifa_next) {
-      DEBUG("%s: %s %s\n",
-            i->ifa_name,
-            inet_ntoa(reinterpret_cast<sockaddr_in*>(i->ifa_addr)->sin_addr),
-            inet_ntoa(reinterpret_cast<sockaddr_in*>(i->ifa_netmask)->sin_addr));
-   }
-   freeifaddrs(ptIFAddrs);
    /* Parse XML configuration for multicast */
-   std::string strInterfaceAddr;
-   GetNodeAttribute(t_node, "ip_address", strInterfaceAddr);
-   // TODO
    std::string strMulticastAddr;
    GetNodeAttribute(t_node, "multicast_address", strMulticastAddr);
-   // TODO
    uint16_t nMulticastPort;
    GetNodeAttribute(t_node, "multicast_port", nMulticastPort);
    /* Setup UDP socket */
    m_nMulticastSocket = ::socket(AF_INET, SOCK_DGRAM, 0);
-   fcntl(m_nMulticastSocket, F_SETFL, O_NONBLOCK);
+   if(m_nMulticastSocket < 0) {
+      DEBUG_FUNCTION_EXIT;
+      THROW_ARGOSEXCEPTION("socket() in wifi sensor failed: " << strerror(errno));
+   }
+   // if(fcntl(m_nMulticastSocket, F_SETFL, O_NONBLOCK) < 0) {
+   //    DEBUG_FUNCTION_EXIT;
+   //    THROW_ARGOSEXCEPTION("fcntl() in wifi sensor failed: " << strerror(errno));
+   // }
    memset(&m_tMulticastAddr, 0, sizeof(m_tMulticastAddr));
    m_tMulticastAddr.sin_family = AF_INET;
    m_tMulticastAddr.sin_port = htons(nMulticastPort);
@@ -41,19 +30,21 @@ void CRealLeoWiFiSensor::Init(TConfigurationNode& t_node) {
    int nRes = bind(m_nMulticastSocket,
                    reinterpret_cast<sockaddr*>(&m_tMulticastAddr),
                    sizeof(m_tMulticastAddr));
+   DEBUG("Bound to IP address %s\n",
+         inet_ntoa(m_tMulticastAddr.sin_addr)
+      );
    if(nRes < 0) {
       DEBUG_FUNCTION_EXIT;
       THROW_ARGOSEXCEPTION("bind() in wifi sensor failed: " << strerror(errno));
    }
    struct ip_mreq tIPMReq;
    tIPMReq.imr_multiaddr.s_addr = inet_addr(strMulticastAddr.c_str());
-   tIPMReq.imr_interface.s_addr = inet_addr(strInterfaceAddr.c_str());
-   nRes = setsockopt(m_nMulticastSocket,
-                     IPPROTO_IP,
-                     IP_ADD_MEMBERSHIP,
-                     &tIPMReq,
-                     sizeof(tIPMReq));
-   if(nRes < 0) {
+   tIPMReq.imr_interface.s_addr = htonl(INADDR_ANY);
+   if(setsockopt(m_nMulticastSocket,
+                 IPPROTO_IP,
+                 IP_ADD_MEMBERSHIP,
+                 &tIPMReq,
+                 sizeof(tIPMReq)) < 0) {
       DEBUG_FUNCTION_EXIT;
       THROW_ARGOSEXCEPTION("setsockopt() in wifi sensor failed: " << strerror(errno));
    }
@@ -67,6 +58,7 @@ void CRealLeoWiFiSensor::Init(TConfigurationNode& t_node) {
       THROW_ARGOSEXCEPTION("pthread_create() in wifi sensor failed: " << strerror(errno));
    }
    m_tListeningMutex = PTHREAD_MUTEX_INITIALIZER;
+   DEBUG("Listening thread started\n");
    DEBUG_FUNCTION_EXIT;
 }
 
@@ -81,7 +73,7 @@ void CRealLeoWiFiSensor::Destroy() {
     */
    close(m_nMulticastSocket);
    /* Wait for listening thread to finish */
-   pthread_join(m_tListeningThread, nullptr);
+   pthread_cancel(m_tListeningThread);
    LOG << "WiFi Listening thread stopped" << std::endl;
    DEBUG_FUNCTION_EXIT;
 }
@@ -90,12 +82,10 @@ void CRealLeoWiFiSensor::Destroy() {
 /****************************************/
 
 void CRealLeoWiFiSensor::GetMessages(std::vector<CCI_LeoWiFiSensor::SMessage>& vec_messages) {
-   DEBUG_FUNCTION_ENTER;
    pthread_mutex_lock(&m_tListeningMutex);
    vec_messages.swap(m_vecMsgQueue);
    m_vecMsgQueue.clear();
    pthread_mutex_unlock(&m_tListeningMutex);
-   DEBUG_FUNCTION_EXIT;
 }
 
 /****************************************/
@@ -114,20 +104,20 @@ void CRealLeoWiFiSensor::FlushMessages() {
 
 void* CRealLeoWiFiSensor::ListeningThread() {
    DEBUG_FUNCTION_ENTER;
-   LOG << "WiFi Listening thread started" << std::endl;
    DEBUG("WiFi Listening thread started\n");
-   /* Set up non-blocking listen that polls every 10 milliseconds */
-   fd_set tSocket;
-   struct timeval tv;
-   tv.tv_sec = 0;
-   tv.tv_usec = 10000;
+   /* Set up non-blocking listen that polls every 100 milliseconds */
+   // fd_set tSocket;
+   // struct timeval tv;
+   // tv.tv_sec = 0;
+   // tv.tv_usec = 100000;
    while(1) {
       /* Poll message */
-      FD_ZERO(&tSocket);
-      FD_SET(m_nMulticastSocket, &tSocket);
-      DEBUG("Calling select()...\n");
-      int nReady = select(m_nMulticastSocket + 1, &tSocket, nullptr, nullptr, &tv);
+      // FD_ZERO(&tSocket);
+      // FD_SET(m_nMulticastSocket, &tSocket);
+      // int nReady = select(m_nMulticastSocket + 1, &tSocket, nullptr, nullptr, &tv);
+      int nReady = 1;
       if(nReady > 0) {
+         // DEBUG("Received something...\n");
          struct sockaddr tSenderAddr;
          /* Receive message payload size */
          uint32_t unPayloadSize;
@@ -139,24 +129,29 @@ void* CRealLeoWiFiSensor::ListeningThread() {
             /* In case of error, it's fine to exit the thread */
             pthread_exit(nullptr);
          }
-         /* Receive message payload */
-         unsigned char* punBuffer = new unsigned char[unPayloadSize];
-         nRecvd = ReceiveDataMultiCast(
-            punBuffer,
-            unPayloadSize,
-            &tSenderAddr);
-         if(nRecvd < 0) {
-            /* In case of error, it's fine to exit the thread */
-            pthread_exit(nullptr);
+         else if(nRecvd > 0) {
+            /* Receive message payload */
+            unsigned char* punBuffer = new unsigned char[unPayloadSize];
+            nRecvd = ReceiveDataMultiCast(
+               punBuffer,
+               unPayloadSize,
+               &tSenderAddr);
+            if(nRecvd < 0) {
+               /* In case of error, it's fine to exit the thread */
+               pthread_exit(nullptr);
+            }
+            else if(nRecvd > 0) {
+               /* Add message to queue */
+               pthread_mutex_lock(&m_tListeningMutex);
+               m_vecMsgQueue.push_back({
+                     inet_ntoa(reinterpret_cast<sockaddr_in*>(&tSenderAddr)->sin_addr),
+                     CByteArray(punBuffer, unPayloadSize)
+                  });
+               DEBUG("m_vecMsgQueue.size() = %zu\n", m_vecMsgQueue.size());
+               pthread_mutex_unlock(&m_tListeningMutex);
+            }
+            delete[] punBuffer;
          }
-         /* Add message to queue */
-         pthread_mutex_lock(&m_tListeningMutex);
-         m_vecMsgQueue.push_back({
-               inet_ntoa(reinterpret_cast<sockaddr_in*>(&tSenderAddr)->sin_addr),
-               CByteArray(punBuffer, unPayloadSize)
-            });
-         pthread_mutex_unlock(&m_tListeningMutex);
-         delete[] punBuffer;
       }
       else if(nReady < 0) {
          /* In case of error, it's fine to exit the thread */
@@ -180,24 +175,21 @@ ssize_t CRealLeoWiFiSensor::ReceiveDataMultiCast(unsigned char* pt_buf, size_t u
    ssize_t nTotRecvd = 0;
    ssize_t nBufLeft = un_size;
    do {
-      DEBUG("Calling recvfrom()...\n");
       nRecvd = recvfrom(m_nMulticastSocket,
                         pt_buf + nTotRecvd,
                         nBufLeft,
                         0, // flags
                         pt_sender_addr,
                         &tSenderAddrLen);
-      DEBUG("recvfrom() received %zd bytes\n", nRecvd);
       if(nRecvd < 0) {
          DEBUG("nRecvd < 0\n");
-         DEBUG_FUNCTION_EXIT;
          return -1;
       }
       else {
          nTotRecvd += nRecvd;
          nBufLeft -= nRecvd;
       }
-   } while(nRecvd > 0);
+   } while(nBufLeft > 0);
    return nTotRecvd;
 }
 

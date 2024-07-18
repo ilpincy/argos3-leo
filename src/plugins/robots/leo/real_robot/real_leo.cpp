@@ -41,7 +41,16 @@ void CRealLeo::InitRobot() {
 /****************************************/
 
 void CRealLeo::Destroy() {
-   /* TODO: Stop wheels */
+   for(std::vector<CRealLeoDevice*>::iterator it = m_vecActuators.begin();
+       it != m_vecActuators.end();
+       ++it) {
+      dynamic_cast<CCI_Actuator*>(*it)->Destroy();
+   }
+   for(std::vector<CRealLeoDevice*>::iterator it = m_vecSensors.begin();
+       it != m_vecActuators.end();
+       ++it) {
+      dynamic_cast<CCI_Sensor*>(*it)->Destroy();
+   }
 #ifdef catkin_FOUND
    /* Close ROS node */
    ros::shutdown();
@@ -102,6 +111,17 @@ void CRealLeo::Sense(Real f_elapsed_time) {
    /* Tell ROS to call message handlers */
    ros::spinOnce();
 #endif // catkin_FOUND
+   LOG.Flush();
+   LOGERR.Flush();
+}
+
+/****************************************/
+/****************************************/
+
+void CRealLeo::Control() {
+   CRealRobot::Control();
+   LOG.Flush();
+   LOGERR.Flush();
 }
 
 /****************************************/
@@ -116,6 +136,8 @@ void CRealLeo::Act(Real f_elapsed_time) {
    /* Tell ROS to publish the messages */
    ros::spinOnce();
 #endif // catkin_FOUND
+   LOG.Flush();
+   LOGERR.Flush();
 }
 
 /****************************************/

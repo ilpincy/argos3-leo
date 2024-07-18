@@ -24,9 +24,15 @@ int main(int argc, char* argv[]) {
       strControllerId);
    try {
       cCLAP.Parse(argc, argv);
+      DEBUG("Parsed the parameters\n");
+      DEBUG("  strARGoSFName = '%s'\n", strARGoSFName.c_str());
+      DEBUG("  strControllerId = '%s'\n", strControllerId.c_str());
       /*
        * Initialize the robot
        */
+      if(strControllerId == "") {
+         THROW_ARGOSEXCEPTION("Missing controller id, please add -i <id>");
+      }
       CRealLeo* pcRobot = new CRealLeo();
       pcRobot->Init(strARGoSFName, strControllerId);
       /*
@@ -37,6 +43,8 @@ int main(int argc, char* argv[]) {
    catch(CARGoSException& ex) {
       /* A fatal error occurred: dispose of data, print error and exit */
       LOGERR << ex.what() << std::endl;
+      LOG.Flush();
+      LOGERR.Flush();
       return 1;
    }
    /* All done (should never get here) */

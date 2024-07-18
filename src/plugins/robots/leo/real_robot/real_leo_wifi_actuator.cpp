@@ -9,18 +9,25 @@
 /****************************************/
 
 void CRealLeoWiFiActuator::Init(TConfigurationNode& t_node) {
-   /* Parse XML configuration */
-   std::string strMulticastAddr("224.0.0.10");
-   int nMulticastPort = 8888;
+   /* Parse XML configuration for multicast */
+   std::string strMulticastAddr;
+   GetNodeAttribute(t_node, "multicast_address", strMulticastAddr);
+   uint16_t nMulticastPort;
+   GetNodeAttribute(t_node, "multicast_port", nMulticastPort);
    /* Create socket for sending */
    m_nMulticastSocket = socket(AF_INET, SOCK_DGRAM, 0);
    if(m_nMulticastSocket < 0) {
       THROW_ARGOSEXCEPTION("socket() in wifi actuator failed:" << strerror(errno));
    }
+   /* Set socket time-to-live */
+   int nMulticastTTL = 1;
+   if(setsockopt(m_nMulticastSocket, IPPROTO_IP, IP_MULTICAST_TTL, &nMulticastTTL, sizeof(nMulticastTTL)) < 0) {
+      THROW_ARGOSEXCEPTION("setsockopt() in wifi actuator failed:" << strerror(errno));
+   }
    memset(&m_tMulticastAddr, 0, sizeof(m_tMulticastAddr));
    m_tMulticastAddr.sin_family = AF_INET;
    m_tMulticastAddr.sin_addr.s_addr = inet_addr(strMulticastAddr.c_str());
-   m_tMulticastAddr.sin_port = nMulticastPort;
+   m_tMulticastAddr.sin_port = htons(nMulticastPort);
 }
 
 /****************************************/
@@ -42,6 +49,7 @@ void CRealLeoWiFiActuator::Do(Real f_elapsed_time) {
       /* Second, send message payload */
       SendDataMultiCast(itM->Payload.ToCArray(), unToSend);
    }
+   m_vecMsgQueue.clear();
 }
 
 /****************************************/
@@ -55,7 +63,6 @@ void CRealLeoWiFiActuator::SendToOne(const std::string& str_addr, const CByteArr
 /****************************************/
 
 void CRealLeoWiFiActuator::SendToMany(const CByteArray& c_message) {
-   THROW_ARGOSEXCEPTION("CRealLeoWiFiActuator::SendToMany not implemented!");
    m_vecMsgQueue.push_back({"", c_message});
 }
 
