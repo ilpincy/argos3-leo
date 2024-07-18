@@ -20,7 +20,7 @@
         <leo_wifi />
       </actuators>
       <sensors>
-        <leo_wifi ip_address="" multicast_address="224.0.0.20" multicast_port="8888"/>
+        <leo_wifi wifi_iface="wlan_int" ip_address="" multicast_address="224.0.0.20" multicast_port="8888"/>
       </sensors>
     </leo_test_communication>
   </controllers>
