@@ -43,6 +43,8 @@ void CLeoTestCommunication::ControlStep() {
          RLOG << "Received message #" << unRCounter << " from " << strRId << std::endl;
       }
    }
+   /* Increase counter */
+   ++unCounter;
 }
 
 /****************************************/
