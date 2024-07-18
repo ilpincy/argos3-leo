@@ -2,6 +2,7 @@
 #define REAL_LEO_WIFI_SENSOR_H
 
 #include <argos3/plugins/robots/leo/control_interface/ci_leo_wifi_sensor.h>
+#include <argos3/plugins/robots/leo/real_robot/real_leo_device.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -11,7 +12,8 @@
 
 using namespace argos;
 
-class CRealLeoWiFiSensor : public CCI_LeoWiFiSensor {
+class CRealLeoWiFiSensor : public CCI_LeoWiFiSensor,
+                           public CRealLeoDevice {
 
 public:
 
@@ -20,6 +22,8 @@ public:
    virtual void Init(TConfigurationNode& t_node);
 
    virtual void Destroy();
+
+   virtual void Do(Real f_elapsed_time) {}
 
    virtual void GetMessages(std::vector<CCI_LeoWiFiSensor::SMessage>& vec_messages);
 

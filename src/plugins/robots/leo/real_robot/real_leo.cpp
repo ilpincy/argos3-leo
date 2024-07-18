@@ -1,6 +1,9 @@
 #include "real_leo.h"
 #include "real_leo_posetwist_actuator.h"
 #include "real_leo_odometry_sensor.h"
+#include "real_leo_wifi_actuator.h"
+#include "real_leo_wifi_sensor.h"
+
 #include <argos3/core/utility/logging/argos_log.h>
 
 /****************************************/
@@ -59,6 +62,12 @@ CCI_Actuator* CRealLeo::MakeActuator(const std::string& str_name) {
       LOG << "[INFO] Successfully initialized actuator \"" << str_name << std::endl;
       return pcAct;
    }
+   if(str_name == "leo_wifi") {
+      CRealLeoWiFiActuator* pcActuator = new CRealLeoWiFiActuator();
+      m_vecActuators.push_back(pcActuator);
+      LOG << "[INFO] Successfully initialized actuator \"" << str_name << std::endl;
+      return pcActuator;
+   }
    return nullptr;
 }
 
@@ -72,6 +81,12 @@ CCI_Sensor* CRealLeo::MakeSensor(const std::string& str_name) {
 #else
       CRealLeoOdometrySensor* pcSensor = new CRealLeoOdometrySensor();
 #endif // catkin_FOUND
+      m_vecSensors.push_back(pcSensor);
+      LOG << "[INFO] Successfully initialized sensor \"" << str_name << std::endl;
+      return pcSensor;
+   }
+   if(str_name == "leo_wifi") {
+      CRealLeoWiFiSensor* pcSensor = new CRealLeoWiFiSensor();
       m_vecSensors.push_back(pcSensor);
       LOG << "[INFO] Successfully initialized sensor \"" << str_name << std::endl;
       return pcSensor;

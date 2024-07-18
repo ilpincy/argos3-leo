@@ -2,7 +2,7 @@
 #define REAL_LEO_ODOMETRY_SENSOR_H
 
 #include <argos3/plugins/robots/leo/control_interface/ci_leo_odometry_sensor.h>
-#include <argos3/plugins/robots/leo/real_robot/real_leo_device.h>
+#include <argos3/plugins/robots/leo/real_robot/real_leo_ros_device.h>
 #ifdef catkin_FOUND
 #include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
@@ -12,7 +12,7 @@ using namespace argos;
 
 class CRealLeoOdometrySensor :
    public CCI_LeoOdometrySensor,
-   public CRealLeoDevice {
+   public CRealLeoROSDevice {
 
 public:
 
@@ -24,12 +24,14 @@ public:
 
    virtual ~CRealLeoOdometrySensor() {}
 
+   virtual void Do(Real f_elapsed_time) {}
+
 #ifdef catkin_FOUND
-   void Update(const nav_msgs::Odometry& message);
+   void Update(const nav_msgs::Odometry& c_message);
 #endif // catkin_FOUND
 
 #ifdef catkin_FOUND
-   ros::Subscriber c_sub;
+   ros::Subscriber m_cSub;
 #endif // catkin_FOUND
 
 };

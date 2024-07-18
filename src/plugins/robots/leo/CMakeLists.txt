@@ -23,6 +23,7 @@ endif(ARGOS_BUILD_FOR_SIMULATOR)
 if(ARGOS_BUILD_FOR STREQUAL "leo")
   set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT
     real_robot/real_leo.h
+    real_robot/real_leo_wifi_actuator.h
     real_robot/real_leo_wifi_sensor.h
   )
   if(catkin_FOUND)
@@ -72,6 +73,7 @@ if(ARGOS_BUILD_FOR STREQUAL "leo")
     ${ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO}
     ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT}
     real_robot/real_leo.cpp
+    real_robot/real_leo_wifi_actuator.cpp
     real_robot/real_leo_wifi_sensor.cpp
   )
   if(catkin_FOUND)

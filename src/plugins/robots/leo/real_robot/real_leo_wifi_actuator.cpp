@@ -1,0 +1,83 @@
+#include "real_leo_wifi_actuator.h"
+
+#include <argos3/core/utility/logging/argos_log.h>
+
+#include <arpa/inet.h>
+#include <cstdio>
+
+/****************************************/
+/****************************************/
+
+void CRealLeoWiFiActuator::Init(TConfigurationNode& t_node) {
+   /* Parse XML configuration */
+   std::string strMulticastAddr("224.0.0.10");
+   int nMulticastPort = 8888;
+   /* Create socket for sending */
+   m_nMulticastSocket = socket(AF_INET, SOCK_DGRAM, 0);
+   if(m_nMulticastSocket < 0) {
+      THROW_ARGOSEXCEPTION("socket() in wifi actuator failed:" << strerror(errno));
+   }
+   memset(&m_tMulticastAddr, 0, sizeof(m_tMulticastAddr));
+   m_tMulticastAddr.sin_family = AF_INET;
+   m_tMulticastAddr.sin_addr.s_addr = inet_addr(strMulticastAddr.c_str());
+   m_tMulticastAddr.sin_port = nMulticastPort;
+}
+
+/****************************************/
+/****************************************/
+
+void CRealLeoWiFiActuator::Destroy() {
+}
+
+/****************************************/
+/****************************************/
+
+void CRealLeoWiFiActuator::Do(Real f_elapsed_time) {
+   for(std::vector<CCI_LeoWiFiSensor::SMessage>::iterator itM = m_vecMsgQueue.begin();
+       itM != m_vecMsgQueue.end();
+       ++itM) {
+      ssize_t nToSend = itM->Payload.Size();
+      ssize_t nTotSent = 0, nSent;
+      while(nToSend > 0) {
+         nSent = sendto(m_nMulticastSocket,
+                        itM->Payload.ToCArray() + nTotSent,
+                        nToSend,
+                        0,
+                        reinterpret_cast<sockaddr*>(&m_tMulticastAddr),
+                        sizeof(m_tMulticastAddr));
+         if(nSent < 0) {
+            LOGERR << "sendto() in wifi actuator failed" << strerror(errno) << std::endl;
+            break;
+         }
+         else {
+            nTotSent += nSent;
+            nToSend -= nSent;
+         }
+      }
+   }
+}
+
+/****************************************/
+/****************************************/
+
+void CRealLeoWiFiActuator::SendToOne(const std::string& str_addr, const CByteArray& c_message) {
+   THROW_ARGOSEXCEPTION("CRealLeoWiFiActuator::SendToOne not implemented!");
+}
+
+/****************************************/
+/****************************************/
+
+void CRealLeoWiFiActuator::SendToMany(const CByteArray& c_message) {
+   THROW_ARGOSEXCEPTION("CRealLeoWiFiActuator::SendToMany not implemented!");
+   m_vecMsgQueue.push_back({"", c_message});
+}
+
+/****************************************/
+/****************************************/
+
+void CRealLeoWiFiActuator::SendToAll(const CByteArray& c_payload) {
+   THROW_ARGOSEXCEPTION("CRealLeoWiFiActuator::SendToAll not implemented!");
+}
+
+/****************************************/
+/****************************************/
