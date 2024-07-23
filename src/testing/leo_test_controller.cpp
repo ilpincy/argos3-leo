@@ -1,5 +1,5 @@
 /* Include the controller definition */
-#include "LeoTestController.h"
+#include "leo_test_controller.h"
 /* Function definitions for XML parsing */
 #include <argos3/core/utility/configuration/argos_configuration.h>
 /* 2D vector definition */

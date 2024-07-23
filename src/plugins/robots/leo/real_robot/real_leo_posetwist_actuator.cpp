@@ -6,7 +6,7 @@
 /****************************************/
 
 CRealLeoPoseTwistActuator::CRealLeoPoseTwistActuator(ros::NodeHandle& c_node_handle) :
-   CRealLeoDevice(c_node_handle) {
+   CRealLeoROSDevice(c_node_handle) {
    m_cCmdVelPub = GetNodeHandle().advertise<geometry_msgs::Twist>("/cmd_vel", 10);
 }
    
