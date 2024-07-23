@@ -1,6 +1,8 @@
 #include "real_leo_posetwist_actuator.h"
 #include <argos3/core/utility/logging/argos_log.h>
+#ifdef catkin_FOUND
 #include <geometry_msgs/Twist.h>
+#endif // catkin_FOUND
 
 /****************************************/
 /****************************************/

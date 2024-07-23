@@ -102,7 +102,11 @@ CCI_Sensor* CRealLeo::MakeSensor(const std::string& str_name) {
       return pcSensor;
    }
    else if(str_name == "leo_ar_tag") {
-      CRealLeoArTagSensor* pcSensor = new CRealLeoArTagSensor(*m_pcNodeHandle);
+      #ifdef catkin_FOUND
+         CRealLeoArTagSensor* pcSensor = new CRealLeoArTagSensor(*m_pcNodeHandle);
+      #else
+         CRealLeoArTagSensor* pcSensor = new CRealLeoArTagSensor();
+      #endif // catkin_FOUND
       m_vecSensors.push_back(pcSensor);
       LOG << "[INFO] Successfully initialized sensor \"" << str_name << std::endl;
       return pcSensor;

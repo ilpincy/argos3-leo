@@ -19,7 +19,7 @@ public:
 #ifdef catkin_FOUND
    CRealLeoOdometrySensor(ros::NodeHandle& c_node_handle);
 #else
-   CRealLeoOdometrySensor();
+   CRealLeoOdometrySensor() {}
 #endif // catkin_FOUND
 
    virtual ~CRealLeoOdometrySensor() {}

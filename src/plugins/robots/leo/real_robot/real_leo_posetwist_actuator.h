@@ -19,12 +19,16 @@ public:
 #ifdef catkin_FOUND
    CRealLeoPoseTwistActuator(ros::NodeHandle& c_node_handle);
 #else   
-   CRealLeoPoseTwistActuator();
+   CRealLeoPoseTwistActuator() {}
 #endif // catkin_FOUND
    
    virtual ~CRealLeoPoseTwistActuator();
 
-   virtual void Do(Real f_elapsed_time);
+   #ifdef catkin_FOUND
+     virtual void Do(Real f_elapsed_time);
+   #else   
+     virtual void Do(Real f_elapsed_time) {}
+   #endif // catkin_FOUND
    
    virtual void SetLinearVelocity(Real f_velocity);
 
