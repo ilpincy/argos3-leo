@@ -22,7 +22,7 @@ public:
    CRealLeoPoseTwistActuator() {}
 #endif // catkin_FOUND
    
-   virtual ~CRealLeoPoseTwistActuator();
+   virtual ~CRealLeoPoseTwistActuator() {}
 
    #ifdef catkin_FOUND
      virtual void Do(Real f_elapsed_time);
@@ -30,9 +30,14 @@ public:
      virtual void Do(Real f_elapsed_time) {}
    #endif // catkin_FOUND
    
-   virtual void SetLinearVelocity(Real f_velocity);
-
-   virtual void SetAngularVelocity(const CRadians& c_velocity);
+   virtual void SetLinearVelocity(Real f_velocity){
+     // TODO: ARGoS works with cm/s, what does the Leo do?
+     m_fDesiredLinearVelocity = f_velocity;
+   }
+   
+     virtual void SetAngularVelocity(const CRadians& c_velocity) {
+     m_cDesiredAngularVelocity = c_velocity;
+   }
 
 private:
 

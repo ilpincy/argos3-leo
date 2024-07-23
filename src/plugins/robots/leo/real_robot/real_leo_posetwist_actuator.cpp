@@ -15,12 +15,6 @@ CRealLeoPoseTwistActuator::CRealLeoPoseTwistActuator(ros::NodeHandle& c_node_han
 /****************************************/
 /****************************************/
 
-CRealLeoPoseTwistActuator::~CRealLeoPoseTwistActuator() {
-}
-   
-/****************************************/
-/****************************************/
-
 void CRealLeoPoseTwistActuator::Do(Real f_elapsed_time) {
    /* Create a Twist message to send to ROS */
    geometry_msgs::Twist cVelMsg;
@@ -34,21 +28,6 @@ void CRealLeoPoseTwistActuator::Do(Real f_elapsed_time) {
    cVelMsg.angular.z = m_cDesiredAngularVelocity.GetValue();
    /* Publish the message */
    m_cCmdVelPub.publish(cVelMsg);
-}
-
-/****************************************/
-/****************************************/
-
-void CRealLeoPoseTwistActuator::SetLinearVelocity(Real f_velocity) {
-   // TODO: ARGoS works with cm/s, what does the Leo do?
-   m_fDesiredLinearVelocity = f_velocity;
-}
-
-/****************************************/
-/****************************************/
-
-void CRealLeoPoseTwistActuator::SetAngularVelocity(const CRadians& c_velocity) {
-   m_cDesiredAngularVelocity = c_velocity;
 }
 
 /****************************************/
