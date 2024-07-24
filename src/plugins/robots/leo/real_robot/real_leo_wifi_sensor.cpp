@@ -159,17 +159,15 @@ ssize_t CRealLeoWiFiSensor::ReceiveDataMultiCast(unsigned char* pt_buf,
    ssize_t nRecvd;
    ssize_t nTotRecvd = 0;
    ssize_t nBufLeft = un_size;
-   /* Receive timeout, if set */
-   if(n_timeout > 0) {
-      struct timeval sTimeout;
-      sTimeout.tv_sec = 0;
-      sTimeout.tv_usec = n_timeout;
-      setsockopt(m_nMulticastSocket,
-                 SOL_SOCKET,
-                 SO_RCVTIMEO,
-                 &sTimeout,
-                 sizeof(sTimeout));
-   }
+   /* Receive timeout, 0 means no timeout */
+   struct timeval sTimeout;
+   sTimeout.tv_sec = 0;
+   sTimeout.tv_usec = n_timeout;
+   setsockopt(m_nMulticastSocket,
+              SOL_SOCKET,
+              SO_RCVTIMEO,
+              &sTimeout,
+              sizeof(sTimeout));
    do {
       nRecvd = recvfrom(m_nMulticastSocket,
                         pt_buf + nTotRecvd,
