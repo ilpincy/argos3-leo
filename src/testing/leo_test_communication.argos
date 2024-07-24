@@ -20,7 +20,7 @@
         <leo_wifi multicast_address="239.0.0.20" multicast_port="8888" />
       </actuators>
       <sensors>
-        <leo_wifi multicast_address="239.0.0.20" multicast_port="8888"/>
+        <leo_wifi multicast_address="239.0.0.20" multicast_port="8888" multicast_timeout="300" />
       </sensors>
       <params />
     </leo_test_communication>
