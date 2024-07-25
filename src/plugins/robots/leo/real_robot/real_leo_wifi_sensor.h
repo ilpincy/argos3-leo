@@ -31,12 +31,16 @@ public:
 
 protected:
 
-   ssize_t ReceiveDataMultiCast(unsigned char* pt_buf, size_t un_size, struct sockaddr* pt_sender_addr);
+   ssize_t ReceiveDataMultiCast(unsigned char* pt_buf,
+                                size_t un_size,
+                                struct sockaddr* pt_sender_addr,
+                                long int n_timeout);
 
 protected:
 
    int m_nMulticastSocket;
    struct sockaddr_in m_tMulticastAddr;
+   long int m_nMulticastTimeout;
 
    pthread_t m_tListeningThread;
    pthread_mutex_t m_tListeningMutex;

@@ -13,16 +13,14 @@ void CRealLeoWiFiSensor::Init(TConfigurationNode& t_node) {
    GetNodeAttribute(t_node, "multicast_address", strMulticastAddr);
    uint16_t nMulticastPort;
    GetNodeAttribute(t_node, "multicast_port", nMulticastPort);
+   GetNodeAttribute(t_node, "multicast_timeout", m_nMulticastTimeout);
+   m_nMulticastTimeout *= 1000;
    /* Setup UDP socket */
    m_nMulticastSocket = ::socket(AF_INET, SOCK_DGRAM, 0);
    if(m_nMulticastSocket < 0) {
       DEBUG_FUNCTION_EXIT;
       THROW_ARGOSEXCEPTION("socket() in wifi sensor failed: " << strerror(errno));
    }
-   // if(fcntl(m_nMulticastSocket, F_SETFL, O_NONBLOCK) < 0) {
-   //    DEBUG_FUNCTION_EXIT;
-   //    THROW_ARGOSEXCEPTION("fcntl() in wifi sensor failed: " << strerror(errno));
-   // }
    memset(&m_tMulticastAddr, 0, sizeof(m_tMulticastAddr));
    m_tMulticastAddr.sin_family = AF_INET;
    m_tMulticastAddr.sin_port = htons(nMulticastPort);
@@ -105,59 +103,43 @@ void CRealLeoWiFiSensor::FlushMessages() {
 void* CRealLeoWiFiSensor::ListeningThread() {
    DEBUG_FUNCTION_ENTER;
    DEBUG("WiFi Listening thread started\n");
-   /* Set up non-blocking listen that polls every 100 milliseconds */
-   // fd_set tSocket;
-   // struct timeval tv;
-   // tv.tv_sec = 0;
-   // tv.tv_usec = 100000;
+   /* Set up blocking listen with a timeout */
+   struct timeval sTimeout;
+   sTimeout.tv_sec = 0;
+   sTimeout.tv_usec = 100000;
    while(1) {
-      /* Poll message */
-      // FD_ZERO(&tSocket);
-      // FD_SET(m_nMulticastSocket, &tSocket);
-      // int nReady = select(m_nMulticastSocket + 1, &tSocket, nullptr, nullptr, &tv);
-      int nReady = 1;
-      if(nReady > 0) {
-         // DEBUG("Received something...\n");
-         struct sockaddr tSenderAddr;
-         /* Receive message payload size */
-         uint32_t unPayloadSize;
-         ssize_t nRecvd = ReceiveDataMultiCast(
-            reinterpret_cast<unsigned char*>(&unPayloadSize),
-            sizeof(unPayloadSize),
-            &tSenderAddr);
-         if(nRecvd < 0) {
-            /* In case of error, it's fine to exit the thread */
-            pthread_exit(nullptr);
-         }
-         else if(nRecvd > 0) {
-            /* Receive message payload */
-            unsigned char* punBuffer = new unsigned char[unPayloadSize];
-            nRecvd = ReceiveDataMultiCast(
-               punBuffer,
-               unPayloadSize,
-               &tSenderAddr);
-            if(nRecvd < 0) {
-               /* In case of error, it's fine to exit the thread */
-               pthread_exit(nullptr);
-            }
-            else if(nRecvd > 0) {
-               /* Add message to queue */
-               pthread_mutex_lock(&m_tListeningMutex);
-               m_vecMsgQueue.push_back({
-                     inet_ntoa(reinterpret_cast<sockaddr_in*>(&tSenderAddr)->sin_addr),
-                     CByteArray(punBuffer, unPayloadSize)
-                  });
-               DEBUG("m_vecMsgQueue.size() = %zu\n", m_vecMsgQueue.size());
-               pthread_mutex_unlock(&m_tListeningMutex);
-            }
-            delete[] punBuffer;
-         }
-      }
-      else if(nReady < 0) {
+      struct sockaddr tSenderAddr;
+      /* Receive message payload size */
+      uint32_t unPayloadSize;
+      ssize_t nRecvd = ReceiveDataMultiCast(
+         reinterpret_cast<unsigned char*>(&unPayloadSize),
+         sizeof(unPayloadSize),
+         &tSenderAddr,
+         0);
+      if(nRecvd < 0) {
          /* In case of error, it's fine to exit the thread */
-         DEBUG("nReady < 0\n");
          DEBUG_FUNCTION_EXIT;
          pthread_exit(nullptr);
+      }
+      else if(nRecvd > 0) {
+         /* Receive message payload */
+         unsigned char* punBuffer = new unsigned char[unPayloadSize];
+         nRecvd = ReceiveDataMultiCast(
+            punBuffer,
+            unPayloadSize,
+            &tSenderAddr,
+            m_nMulticastTimeout);
+         if(nRecvd > 0) {
+            /* Add message to queue */
+            pthread_mutex_lock(&m_tListeningMutex);
+            m_vecMsgQueue.push_back({
+                  inet_ntoa(reinterpret_cast<sockaddr_in*>(&tSenderAddr)->sin_addr),
+                  CByteArray(punBuffer, unPayloadSize)
+               });
+            DEBUG("m_vecMsgQueue.size() = %zu\n", m_vecMsgQueue.size());
+            pthread_mutex_unlock(&m_tListeningMutex);
+         }
+         delete[] punBuffer;
       }
    }
    DEBUG_FUNCTION_EXIT;
@@ -167,13 +149,25 @@ void* CRealLeoWiFiSensor::ListeningThread() {
 /****************************************/
 /****************************************/
 
-ssize_t CRealLeoWiFiSensor::ReceiveDataMultiCast(unsigned char* pt_buf, size_t un_size, struct sockaddr* pt_sender_addr) {
+ssize_t CRealLeoWiFiSensor::ReceiveDataMultiCast(unsigned char* pt_buf,
+                                                 size_t un_size,
+                                                 struct sockaddr* pt_sender_addr,
+                                                 long int n_timeout) {
    /* Sender address information */
    socklen_t tSenderAddrLen = sizeof(struct sockaddr);
-   /*  */
+   /* How much data was received */
    ssize_t nRecvd;
    ssize_t nTotRecvd = 0;
    ssize_t nBufLeft = un_size;
+   /* Receive timeout, 0 means no timeout */
+   struct timeval sTimeout;
+   sTimeout.tv_sec = 0;
+   sTimeout.tv_usec = n_timeout;
+   setsockopt(m_nMulticastSocket,
+              SOL_SOCKET,
+              SO_RCVTIMEO,
+              &sTimeout,
+              sizeof(sTimeout));
    do {
       nRecvd = recvfrom(m_nMulticastSocket,
                         pt_buf + nTotRecvd,
@@ -182,7 +176,7 @@ ssize_t CRealLeoWiFiSensor::ReceiveDataMultiCast(unsigned char* pt_buf, size_t u
                         pt_sender_addr,
                         &tSenderAddrLen);
       if(nRecvd < 0) {
-         DEBUG("nRecvd < 0\n");
+         DEBUG("recvfrom(): %s\n", strerror(errno));
          return -1;
       }
       else {
