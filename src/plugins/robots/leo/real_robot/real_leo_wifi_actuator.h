@@ -36,6 +36,7 @@ protected:
 
    int m_nMulticastSocket;
    struct sockaddr_in m_tMulticastAddr;
+   int m_nMulticastMaxPayloadSize;
 
    std::vector<CCI_LeoWiFiSensor::SMessage> m_vecMsgQueue;
 

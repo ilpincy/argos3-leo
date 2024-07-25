@@ -3,7 +3,13 @@
 #include <argos3/core/utility/logging/argos_log.h>
 
 #include <arpa/inet.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
+#include <netinet/ip.h>
+#include <netinet/udp.h>
+
 #include <cstdio>
+#include <cstring>
 
 /****************************************/
 /****************************************/
@@ -14,6 +20,8 @@ void CRealLeoWiFiActuator::Init(TConfigurationNode& t_node) {
    GetNodeAttribute(t_node, "multicast_address", strMulticastAddr);
    uint16_t nMulticastPort;
    GetNodeAttribute(t_node, "multicast_port", nMulticastPort);
+   std::string strMulticastIface;
+   GetNodeAttribute(t_node, "multicast_iface", strMulticastIface);
    /* Create socket for sending */
    m_nMulticastSocket = socket(AF_INET, SOCK_DGRAM, 0);
    if(m_nMulticastSocket < 0) {
@@ -28,6 +36,18 @@ void CRealLeoWiFiActuator::Init(TConfigurationNode& t_node) {
    m_tMulticastAddr.sin_family = AF_INET;
    m_tMulticastAddr.sin_addr.s_addr = inet_addr(strMulticastAddr.c_str());
    m_tMulticastAddr.sin_port = htons(nMulticastPort);
+   /* Detect the MTU */
+   struct ifreq sIFReq;
+   strcpy(sIFReq.ifr_name, strMulticastIface.c_str());
+   if(ioctl(m_nMulticastSocket, SIOCGIFMTU, &sIFReq) < 0) {
+      THROW_ARGOSEXCEPTION("ioctl() in wifi sensor failed: " << strerror(errno));
+   }
+   LOG << "[INFO] Detected MTU = " << sIFReq.ifr_mtu << " on interface \"" << strMulticastIface << "\"" << std::endl;
+   m_nMulticastMaxPayloadSize =
+      sIFReq.ifr_mtu    // Maximum Transmissible Unit
+      - sizeof(ip)      // IP header size
+      - sizeof(udphdr); // UDP header size
+   LOG << "[INFO] Maximum payload size = " << m_nMulticastMaxPayloadSize << " on interface \"" << std::endl;
 }
 
 /****************************************/
@@ -63,6 +83,10 @@ void CRealLeoWiFiActuator::SendToOne(const std::string& str_addr, const CByteArr
 /****************************************/
 
 void CRealLeoWiFiActuator::SendToMany(const CByteArray& c_message) {
+   if(c_message.Size() > m_nMulticastMaxPayloadSize) {
+      LOGERR << "WiFi actuator: message payload size (" << c_message.Size() << ") is larger than maximum supported by network (" << m_nMulticastMaxPayloadSize << "). Message dropped." << std::endl;
+      return;
+   }
    m_vecMsgQueue.push_back({"", c_message});
 }
 

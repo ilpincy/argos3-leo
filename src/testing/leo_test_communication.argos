@@ -17,7 +17,7 @@
   <controllers>
     <leo_test_communication id="mycntrl" library="build/testing/libleo_test_communication">
       <actuators>
-        <leo_wifi multicast_address="239.0.0.20" multicast_port="8888" />
+        <leo_wifi multicast_address="239.0.0.20" multicast_port="8888" multicast_iface="wlan_int" />
       </actuators>
       <sensors>
         <leo_wifi multicast_address="239.0.0.20" multicast_port="8888" multicast_timeout="300" />
