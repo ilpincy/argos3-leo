@@ -16,7 +16,8 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
     simulator/dynamics2d_leo_model.h
     simulator/leo_entity.h
     simulator/leo_measures.h
-    simulator/leo_posetwist_default_actuator.h)
+    simulator/leo_posetwist_default_actuator.h
+    simulator/leo_odometry_sensor.h)
   if(catkin_FOUND)
     set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_SIMULATOR
       ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_SIMULATOR}
@@ -61,7 +62,8 @@ if(ARGOS_BUILD_FOR_SIMULATOR)
     simulator/dynamics2d_leo_model.cpp
     simulator/leo_entity.cpp
     simulator/leo_measures.cpp
-    simulator/leo_posetwist_default_actuator.cpp)
+    simulator/leo_posetwist_default_actuator.cpp
+    simulator/leo_odometry_sensor.cpp)
     if(catkin_FOUND)
       set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
         ${ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO}
