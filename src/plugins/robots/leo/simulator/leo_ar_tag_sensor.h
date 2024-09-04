@@ -16,11 +16,10 @@ class CEmbodiedEntity;
 #include <argos3/plugins/robots/leo/control_interface/ci_leo_ar_tag_sensor.h>
 
 namespace argos {
-class CLeoArTagSensor : public CCI_LeoArTagSensor,
-                           public CSimulatedSensor {
+class CLeoArTagSensor : public CCI_LeoArTagSensor, public CSimulatedSensor {
 
 public:
-  CLeoArTagSensor();
+  CLeoArTagSensor() {};
   ~CLeoArTagSensor() {}
 
   virtual void Init(TConfigurationNode &t_tree) {}
