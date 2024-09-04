@@ -49,7 +49,7 @@ namespace argos {
   /****************************************/
   /****************************************/
 
-  const CCI_LeoArTagSensor::TReadings& CCI_LeoArTagSensor::GetReading() const {
+  const CCI_LeoArTagSensor::TReadings& CCI_LeoArTagSensor::GetReadings() const {
     return m_tReadings;
   }
 
