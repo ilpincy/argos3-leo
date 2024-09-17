@@ -63,47 +63,6 @@ set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE
   control_interface/ci_leo_wifi_sensor.cpp
   )
 
-# set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
-#   ${ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO}
-#   ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_SIMULATOR}
-#   simulator/dynamics2d_leo_model.cpp
-#   simulator/leo_entity.cpp
-#   simulator/leo_measures.cpp
-#   simulator/leo_posetwist_default_actuator.cpp
-#   simulator/leo_ar_tag_sensor.cpp
-#   simulator/leo_odometry_sensor.cpp
-#   simulator/real_leo_wifi_actuator.cpp
-#   simulator/real_leo_wifi_sensor.cpp
-# )
-
-# set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
-#   ${ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO}
-#   ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT}
-#   real_robot/real_leo.cpp
-#   real_robot/real_leo_wifi_actuator.cpp
-#   real_robot/real_leo_wifi_sensor.cpp
-# )
-
-# if(ARGOS_BUILD_FOR_SIMULATOR)
-
-#   if(catkin_FOUND)
-#     set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_SIMULATOR
-#       ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_SIMULATOR}
-#       simulator/leo_posetwist_ros_actuator.h)
-      
-#   endif(catkin_FOUND)
-# endif(ARGOS_BUILD_FOR_SIMULATOR)
-
-# argos3/plugins/robots/leo/real_robot
-# if(ARGOS_BUILD_FOR STREQUAL "leo")
-#   if(catkin_FOUND)
-#   endif(catkin_FOUND)
-# endif(ARGOS_BUILD_FOR STREQUAL "leo")
-
-#
-# leo sources
-#
-
 set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO
   ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE}
   )

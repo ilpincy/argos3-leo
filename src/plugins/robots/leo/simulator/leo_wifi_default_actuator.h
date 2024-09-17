@@ -5,7 +5,7 @@
 #include <string>
 
 namespace argos {
-class CLeoWifiActuator;
+class CLeoWiFiActuator;
 } // namespace argos
 
 #include <argos3/core/simulator/actuator.h>
@@ -16,18 +16,26 @@ class CLeoWifiActuator;
 #include <argos3/plugins/simulator/entities/rab_equipped_entity.h>
 
 namespace argos {
-class CLeoWifiActuator : public CCI_LeoWiFiActuator, public CSimulatedActuator {
+class CLeoWiFiActuator : public CCI_LeoWiFiActuator, public CSimulatedActuator {
 
 public:
-  CLeoWifiActuator() {};
-  virtual ~CLeoWifiActuator() {}
+  CLeoWiFiActuator() {};
+  virtual ~CLeoWiFiActuator() {}
 
   virtual void SetRobot(CComposableEntity &c_entity);
   virtual void Update();
   virtual void Reset();
 
+  virtual void SendToOne(const std::string& str_addr,
+                              const CByteArray& c_message) {};
+
+  virtual void SendToMany(const CByteArray& c_message) {};
+
+  virtual void SendToAll(const CByteArray& c_payload) {};
+
 private:
   CRABEquippedEntity* m_pcRangeAndBearingEquippedEntity;
+  CByteArray m_cData;
   
 };
 

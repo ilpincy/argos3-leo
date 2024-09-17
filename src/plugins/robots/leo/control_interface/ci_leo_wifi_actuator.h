@@ -42,8 +42,7 @@ namespace argos {
       virtual void CreateLuaState(lua_State* pt_lua_state);
 #endif
 
-   };
-
+};
 }
 
 #endif // CI_LEO_WIFI_ACTUATOR_H

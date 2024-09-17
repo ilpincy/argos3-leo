@@ -5,7 +5,7 @@
 #include <string>
 
 namespace argos {
-class CLeoWifiSensor;
+class CLeoWiFiSensor;
 class CRABEquippedEntity;
 class CEmbodiedEntity;
 class CRABMedium;
@@ -17,13 +17,14 @@ class CRABMedium;
 #include <argos3/core/utility/math/rng.h>
 #include <argos3/plugins/robots/leo/control_interface/ci_leo_wifi_sensor.h>
 #include <argos3/plugins/simulator/entities/rab_equipped_entity.h>
+#include <argos3/plugins/robots/generic/control_interface/ci_range_and_bearing_sensor.h>
 
 namespace argos {
-class CLeoWifiSensor : public CCI_LeoWiFiSensor, public CSimulatedSensor {
+class CLeoWiFiSensor : public CCI_LeoWiFiSensor, public CSimulatedSensor {
 
 public:
-  CLeoWifiSensor();
-  ~CLeoWifiSensor() {}
+  CLeoWiFiSensor();
+  ~CLeoWiFiSensor() {}
 
   virtual void SetRobot(CComposableEntity& c_entity);
 
@@ -38,6 +39,16 @@ public:
   virtual void Enable();
 
   virtual void Disable();
+
+      /**
+       * Fills the given message vector and flushes the internal message queue
+       */
+      virtual void GetMessages(std::vector<SMessage>& vec_messages) {};
+
+      /**
+       * Discards all the messages in the queue.
+       */
+      virtual void FlushMessages() {};
 
   /**
    * Returns true if the rays must be shown in the GUI.
@@ -54,6 +65,32 @@ public:
   inline void SetShowRays(bool b_show_rays) {
       m_bShowRays = b_show_rays;
   }
+  
+  // public:
+
+  //     struct SPacket {
+  //        Real Range;
+  //        CRadians HorizontalBearing;
+  //        /**
+  //         * The vertical bearing is defined as the angle between the local
+  //         * robot XY plane and the message source position, i.e., the elevation
+  //         * in math jargon. This is different from the inclination, which is the
+  //         * angle between the azimuth vector (robot local Z axis) and
+  //         * the vector to the message source. Elevation = 90 degrees - Inclination.
+  //         */
+  //        CRadians VerticalBearing;
+  //        CByteArray Data;
+
+  //        SPacket();
+  //     };
+
+  //     typedef std::vector<SPacket> TReadings;
+
+  //  protected:
+
+  //     TReadings m_tReadings;
+
+  //  };
 
 private:
 
@@ -65,6 +102,7 @@ private:
   CRandom::CRNG*       m_pcRNG;
   CSpace&              m_cSpace;
   bool                 m_bShowRays;
+  CCI_RangeAndBearingSensor::TReadings m_tReadings;
 
 };
 

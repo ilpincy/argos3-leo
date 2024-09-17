@@ -40,8 +40,7 @@ namespace argos {
       virtual void ReadingsToLuaState(lua_State* pt_lua_state);
 #endif
 
-   };
-
+};
 }
 
 #endif // CI_LEO_WIFI_SENSOR_H

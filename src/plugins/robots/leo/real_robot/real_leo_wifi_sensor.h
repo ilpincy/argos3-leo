@@ -45,8 +45,6 @@ protected:
    pthread_t m_tListeningThread;
    pthread_mutex_t m_tListeningMutex;
 
-   std::vector<CCI_LeoWiFiSensor::SMessage> m_vecMsgQueue;
-
 private:
 
    void* ListeningThread();

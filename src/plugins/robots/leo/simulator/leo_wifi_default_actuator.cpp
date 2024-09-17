@@ -7,7 +7,7 @@ namespace argos {
 /****************************************/
 /****************************************/
 
-void CLeoWifiActuator::SetRobot(CComposableEntity& c_entity) {
+void CLeoWiFiActuator::SetRobot(CComposableEntity& c_entity) {
    m_pcRangeAndBearingEquippedEntity = &c_entity.GetComponent<CRABEquippedEntity>("rab");
    m_pcRangeAndBearingEquippedEntity->Enable();
    m_cData.Resize(m_pcRangeAndBearingEquippedEntity->GetMsgSize());
@@ -16,19 +16,19 @@ void CLeoWifiActuator::SetRobot(CComposableEntity& c_entity) {
 /****************************************/
 /****************************************/
 
-void CLeoWifiActuator::Update() {
+void CLeoWiFiActuator::Update() {
    m_pcRangeAndBearingEquippedEntity->SetData(m_cData);
 }
 
 /****************************************/
 /****************************************/
 
-void CLeoWifiActuator::Reset() {
+void CLeoWiFiActuator::Reset() {
    m_cData.Zero();
 }
 
 REGISTER_ACTUATOR(
-    CLeoWifiActuator, "leo_wifi", "default",
+    CLeoWiFiActuator, "leo_wifi", "default",
     "Davis Catherman [daviscatherman@gmail.com]", "1.0",
     "A simulated wifi senso for leo.",
 

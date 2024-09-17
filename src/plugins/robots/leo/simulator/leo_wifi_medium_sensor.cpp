@@ -15,7 +15,7 @@ CRange<CRadians> INCLINATION_RANGE(CRadians(0), CRadians(ARGOS_PI));
 /****************************************/
 /****************************************/
 
-CLeoWifiSensor::CLeoWifiSensor() :
+CLeoWiFiSensor::CLeoWiFiSensor() :
     m_pcRangeAndBearingEquippedEntity(nullptr),
     m_fDistanceNoiseStdDev(0.0f),
     m_fPacketDropProb(0.0f),
@@ -26,7 +26,7 @@ CLeoWifiSensor::CLeoWifiSensor() :
 /****************************************/
 /****************************************/
 
-void CLeoWifiSensor::SetRobot(CComposableEntity& c_entity) {
+void CLeoWiFiSensor::SetRobot(CComposableEntity& c_entity) {
     /* Assign RAB equipped entity to this sensor */
     m_pcRangeAndBearingEquippedEntity = &c_entity.GetComponent<CRABEquippedEntity>("rab");
     /* Get reference to controllable entity */
@@ -36,10 +36,10 @@ void CLeoWifiSensor::SetRobot(CComposableEntity& c_entity) {
 /****************************************/
 /****************************************/
 
-void CLeoWifiSensor::Init(TConfigurationNode& t_tree) {
+void CLeoWiFiSensor::Init(TConfigurationNode& t_tree) {
     try {
         /* Parent class init */
-        CCI_RangeAndBearingSensor::Init(t_tree);
+        CCI_LeoWiFiSensor::Init(t_tree);
         /* Show rays? */
         GetNodeAttributeOrDefault(t_tree, "show_rays", m_bShowRays, m_bShowRays);
         /* Parse noise */
@@ -66,7 +66,7 @@ void CLeoWifiSensor::Init(TConfigurationNode& t_tree) {
 /****************************************/
 /****************************************/
 
-void CLeoWifiSensor::Update() {
+void CLeoWiFiSensor::Update() {
     /* sensor is disabled--nothing to do */
     if (IsDisabled()) {
     return;
@@ -143,14 +143,14 @@ void CLeoWifiSensor::Update() {
 /****************************************/
 /****************************************/
 
-void CLeoWifiSensor::Reset() {
+void CLeoWiFiSensor::Reset() {
     m_tReadings.clear();
 }
 
 
 /****************************************/
 /****************************************/
-void CLeoWifiSensor::Enable() {
+void CLeoWiFiSensor::Enable() {
     m_pcRangeAndBearingEquippedEntity->Enable();
     CCI_Sensor::Enable();
 }
@@ -158,7 +158,7 @@ void CLeoWifiSensor::Enable() {
 /****************************************/
 /****************************************/
 
-void CLeoWifiSensor::Disable() {
+void CLeoWiFiSensor::Disable() {
     m_pcRangeAndBearingEquippedEntity->Disable();
     CCI_Sensor::Disable();
 }
@@ -166,7 +166,7 @@ void CLeoWifiSensor::Disable() {
 /****************************************/
 /****************************************/
 
-void CLeoWifiSensor::Destroy() {
+void CLeoWiFiSensor::Destroy() {
     m_pcRangeAndBearingMedium->RemoveEntity(*m_pcRangeAndBearingEquippedEntity);
 }
 
@@ -174,7 +174,7 @@ void CLeoWifiSensor::Destroy() {
 /****************************************/
 
 REGISTER_SENSOR(
-    CLeoWifiSensor, "leo_wifi", "default",
+    CLeoWiFiSensor, "leo_wifi", "default",
     "Davis Catherman [daviscatherman@gmail.com]", "1.0",
     "A simulated wifi senso for leo.",
 
