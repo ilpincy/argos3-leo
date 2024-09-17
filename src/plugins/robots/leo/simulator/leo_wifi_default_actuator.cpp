@@ -1,0 +1,61 @@
+#include "leo_wifi_default_actuator.h"
+#include <argos3/core/simulator/entity/composable_entity.h>
+#include <argos3/core/simulator/simulator.h>
+
+namespace argos {
+
+/****************************************/
+/****************************************/
+
+void CLeoWifiActuator::SetRobot(CComposableEntity& c_entity) {
+   m_pcRangeAndBearingEquippedEntity = &c_entity.GetComponent<CRABEquippedEntity>("rab");
+   m_pcRangeAndBearingEquippedEntity->Enable();
+   m_cData.Resize(m_pcRangeAndBearingEquippedEntity->GetMsgSize());
+}
+
+/****************************************/
+/****************************************/
+
+void CLeoWifiActuator::Update() {
+   m_pcRangeAndBearingEquippedEntity->SetData(m_cData);
+}
+
+/****************************************/
+/****************************************/
+
+void CLeoWifiActuator::Reset() {
+   m_cData.Zero();
+}
+
+REGISTER_ACTUATOR(
+    CLeoWifiActuator, "leo_wifi", "default",
+    "Davis Catherman [daviscatherman@gmail.com]", "1.0",
+    "A simulated wifi senso for leo.",
+
+    "This Actuator is an empty implementation and does not do anything. In\n"
+    "controllers, you must include the ci_leo_wifi_Actuator.h header.\n\n"
+
+    "REQUIRED XML CONFIGURATION\n\n"
+    "  <controllers>\n"
+    "    ...\n"
+    "    <my_controller ...>\n"
+    "      ...\n"
+    "      <Actuators>\n"
+    "        ...\n"
+    "        <leo_wifi implementation=\"default\" />\n"
+    "        ...\n"
+    "      </Actuators>\n"
+    "      ...\n"
+    "    </my_controller>\n"
+    "    ...\n"
+    "  </controllers>\n\n"
+
+    "OPTIONAL XML CONFIGURATION\n\n"
+
+    "None.\n",
+
+    "Usable");
+
+} // namespace argos
+/****************************************/
+/****************************************/
