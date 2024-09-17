@@ -20,7 +20,7 @@
         <leo_wifi implementation="default" />
       </actuators>
       <sensors>
-        <leo_wifi implementation="medium" medium="rab" show_rays="true" />
+        <leo_wifi implementation="default" medium="rab" show_rays="true" />
       </sensors>
       <params />
     </leo_test_communication>
@@ -53,7 +53,7 @@
   <!-- * Media * -->
   <!-- ********* -->
   <media>
-    <range_and_bearing id="leo_wifi" />
+    <range_and_bearing id="rab" />
   </media>
 
   <!-- ****************** -->
