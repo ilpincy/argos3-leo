@@ -43,7 +43,7 @@ public:
       /**
        * Fills the given message vector and flushes the internal message queue
        */
-      virtual void GetMessages(std::vector<SMessage>& vec_messages) {};
+      virtual void GetMessages(std::vector<SMessage>& vec_messages);
 
       /**
        * Discards all the messages in the queue.
@@ -65,32 +65,6 @@ public:
   inline void SetShowRays(bool b_show_rays) {
       m_bShowRays = b_show_rays;
   }
-  
-  // public:
-
-  //     struct SPacket {
-  //        Real Range;
-  //        CRadians HorizontalBearing;
-  //        /**
-  //         * The vertical bearing is defined as the angle between the local
-  //         * robot XY plane and the message source position, i.e., the elevation
-  //         * in math jargon. This is different from the inclination, which is the
-  //         * angle between the azimuth vector (robot local Z axis) and
-  //         * the vector to the message source. Elevation = 90 degrees - Inclination.
-  //         */
-  //        CRadians VerticalBearing;
-  //        CByteArray Data;
-
-  //        SPacket();
-  //     };
-
-  //     typedef std::vector<SPacket> TReadings;
-
-  //  protected:
-
-  //     TReadings m_tReadings;
-
-  //  };
 
 private:
 
@@ -103,6 +77,8 @@ private:
   CSpace&              m_cSpace;
   bool                 m_bShowRays;
   CCI_RangeAndBearingSensor::TReadings m_tReadings;
+
+  std::vector<CCI_LeoWiFiSensor::SMessage> vec_messages;
 
 };
 

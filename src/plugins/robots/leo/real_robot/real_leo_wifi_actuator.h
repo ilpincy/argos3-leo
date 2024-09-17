@@ -37,7 +37,7 @@ protected:
    int m_nMulticastSocket;
    struct sockaddr_in m_tMulticastAddr;
 
-   std::vector<CCI_LeoWiFiSensor::SMessage> m_vecMsgQueue;
+   // std::vector<CCI_LeoWiFiSensor::SMessage> m_vecMsgQueue;
 
 };
 

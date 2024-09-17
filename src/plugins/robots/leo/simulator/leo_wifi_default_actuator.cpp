@@ -27,10 +27,20 @@ void CLeoWiFiActuator::Reset() {
    m_cData.Zero();
 }
 
+/****************************************/
+/****************************************/
+
+void CLeoWiFiActuator::SendToMany(const CByteArray& c_message) {
+   m_pcRangeAndBearingEquippedEntity->SetData(c_message);
+}
+
+/****************************************/
+/****************************************/
+
 REGISTER_ACTUATOR(
     CLeoWiFiActuator, "leo_wifi", "default",
     "Davis Catherman [daviscatherman@gmail.com]", "1.0",
-    "A simulated wifi senso for leo.",
+    "A simulated wifi actuator for leo.",
 
     "This Actuator is an empty implementation and does not do anything. In\n"
     "controllers, you must include the ci_leo_wifi_Actuator.h header.\n\n"
@@ -40,11 +50,11 @@ REGISTER_ACTUATOR(
     "    ...\n"
     "    <my_controller ...>\n"
     "      ...\n"
-    "      <Actuators>\n"
+    "      <actuators>\n"
     "        ...\n"
     "        <leo_wifi implementation=\"default\" />\n"
     "        ...\n"
-    "      </Actuators>\n"
+    "      </actuators>\n"
     "      ...\n"
     "    </my_controller>\n"
     "    ...\n"

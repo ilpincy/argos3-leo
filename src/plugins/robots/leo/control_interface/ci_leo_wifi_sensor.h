@@ -34,6 +34,10 @@ namespace argos {
        */
       virtual void FlushMessages() = 0;
 
+   protected:
+
+      std::vector<SMessage> m_vecMsgQueue;
+
 #ifdef ARGOS_WITH_LUA
       virtual void CreateLuaState(lua_State* pt_lua_state);
       

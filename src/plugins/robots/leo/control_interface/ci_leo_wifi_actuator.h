@@ -13,6 +13,11 @@ namespace argos {
    
    class CCI_LeoWiFiActuator : public CCI_Actuator {
 
+   struct SMessage {
+      std::string Address;
+      CByteArray Payload;
+   };
+
    public:
 
       virtual ~CCI_LeoWiFiActuator() {}
@@ -37,6 +42,10 @@ namespace argos {
        * not).
        */
       virtual void SendToAll(const CByteArray& c_payload) = 0;
+
+   protected:
+
+      std::vector<SMessage> m_vecMsgQueue;
 
 #ifdef ARGOS_WITH_LUA
       virtual void CreateLuaState(lua_State* pt_lua_state);

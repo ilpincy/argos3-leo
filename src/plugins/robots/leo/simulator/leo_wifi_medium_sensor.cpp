@@ -135,7 +135,14 @@ void CLeoWiFiSensor::Update() {
         /* Set message data */
         sPacket.Data = cRABEntity.GetData();
         /* Add message to the list */
-        m_tReadings.push_back(sPacket);
+        // m_tReadings.push_back(sPacket);
+
+        m_vecMsgQueue.push_back({
+                  0,
+                  sPacket.Data
+               });
+
+        
         }
     }
 }
@@ -173,10 +180,18 @@ void CLeoWiFiSensor::Destroy() {
 /****************************************/
 /****************************************/
 
+void CLeoWiFiSensor::GetMessages(std::vector<SMessage>& vec_messages) {
+   vec_messages.swap(m_vecMsgQueue);
+   m_vecMsgQueue.clear();
+}
+
+/****************************************/
+/****************************************/
+
 REGISTER_SENSOR(
     CLeoWiFiSensor, "leo_wifi", "default",
     "Davis Catherman [daviscatherman@gmail.com]", "1.0",
-    "A simulated wifi senso for leo.",
+    "A simulated wifi sensor for leo.",
 
     "This sensor is an empty implementation and does not do anything. In\n"
     "controllers, you must include the ci_leo_wifi_sensor.h header.\n\n"

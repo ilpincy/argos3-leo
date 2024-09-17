@@ -29,7 +29,7 @@ public:
   virtual void SendToOne(const std::string& str_addr,
                               const CByteArray& c_message) {};
 
-  virtual void SendToMany(const CByteArray& c_message) {};
+  virtual void SendToMany(const CByteArray& c_message);
 
   virtual void SendToAll(const CByteArray& c_payload) {};
 
