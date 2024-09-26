@@ -8,30 +8,33 @@ namespace argos {
 /****************************************/
 
 void CLeoWiFiActuator::SetRobot(CComposableEntity& c_entity) {
-   m_pcRangeAndBearingEquippedEntity = &c_entity.GetComponent<CRABEquippedEntity>("rab");
-   m_pcRangeAndBearingEquippedEntity->Enable();
-   m_cData.Resize(m_pcRangeAndBearingEquippedEntity->GetMsgSize());
+   m_pcWiFiEquippedEntity = &c_entity.GetComponent<CWiFiEquippedEntity>("wifiEntity");
+   m_pcWiFiEquippedEntity->Enable();
 }
 
 /****************************************/
 /****************************************/
 
 void CLeoWiFiActuator::Update() {
-   m_pcRangeAndBearingEquippedEntity->SetData(m_cData);
+    for(auto& e : m_vecMsgQueue) {
+        m_pcWiFiEquippedEntity->AppendData(e);
+    }
+    m_vecMsgQueue.clear();
 }
 
 /****************************************/
 /****************************************/
 
 void CLeoWiFiActuator::Reset() {
-   m_cData.Zero();
+    m_vecMsgQueue.clear();
 }
 
 /****************************************/
 /****************************************/
 
 void CLeoWiFiActuator::SendToMany(const CByteArray& c_message) {
-   m_pcRangeAndBearingEquippedEntity->SetData(c_message);
+   std::cout << __FILE__ << " " << __func__ << std::endl;
+   m_vecMsgQueue.push_back({"", c_message});
 }
 
 /****************************************/

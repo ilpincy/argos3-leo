@@ -9,16 +9,14 @@ class CLeoWiFiActuator;
 } // namespace argos
 
 #include <argos3/core/simulator/actuator.h>
-// #include <argos3/core/simulator/space/space.h>
-// #include <argos3/core/utility/math/range.h>
-// #include <argos3/core/utility/math/rng.h>
 #include <argos3/plugins/robots/leo/control_interface/ci_leo_wifi_actuator.h>
-#include <argos3/plugins/simulator/entities/rab_equipped_entity.h>
+#include <argos3/plugins/simulator/entities/wifi_equipped_entity.h>
 
 namespace argos {
 class CLeoWiFiActuator : public CCI_LeoWiFiActuator, public CSimulatedActuator {
 
 public:
+
   CLeoWiFiActuator() {};
   virtual ~CLeoWiFiActuator() {}
 
@@ -34,8 +32,7 @@ public:
   virtual void SendToAll(const CByteArray& c_payload) {};
 
 private:
-  CRABEquippedEntity* m_pcRangeAndBearingEquippedEntity;
-  CByteArray m_cData;
+  CWiFiEquippedEntity* m_pcWiFiEquippedEntity;
   
 };
 

@@ -11,7 +11,7 @@ namespace argos {
    class CBatteryEquippedEntity;
    class CControllableEntity;
    class CEmbodiedEntity;
-   class CRABEquippedEntity;
+   class CWiFiEquippedEntity;
    class CProximitySensorEquippedEntity;
    class CLeoEntity;
 }
@@ -35,7 +35,7 @@ namespace argos {
                  const CVector3& c_position = CVector3(),
                  const CQuaternion& c_orientation = CQuaternion(),
                  Real f_rab_range = 3.0f,
-                 size_t un_rab_data_size = 10,
+                 size_t un_wifi_data_size = 10,
                  const std::string& str_bat_model = "");
       
       virtual void Init(TConfigurationNode& t_tree);
@@ -56,8 +56,8 @@ namespace argos {
           return *m_pcBatteryEquippedEntity;
       }
 
-      inline CRABEquippedEntity& GetRABEquippedEntity() {
-         return *m_pcRABEquippedEntity;
+      inline CWiFiEquippedEntity& GetRABEquippedEntity() {
+         return *m_pcWiFiEquippedEntity;
       }
 
       inline CProximitySensorEquippedEntity& GetProximitySensorEquippedEntity() {
@@ -89,7 +89,7 @@ namespace argos {
       CControllableEntity*            m_pcControllableEntity;
       CEmbodiedEntity*                m_pcEmbodiedEntity;
       CBatteryEquippedEntity*         m_pcBatteryEquippedEntity;
-      CRABEquippedEntity*             m_pcRABEquippedEntity;
+      CWiFiEquippedEntity*             m_pcWiFiEquippedEntity;
       CProximitySensorEquippedEntity* m_pcProximitySensorEquippedEntity;
       Real     m_fLinearVelocity;
       CRadians m_cAngularVelocity;

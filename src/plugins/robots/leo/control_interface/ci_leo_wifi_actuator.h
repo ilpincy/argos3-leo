@@ -8,15 +8,12 @@ namespace argos {
 
 #include <argos3/core/control_interface/ci_actuator.h>
 #include <argos3/core/utility/datatypes/byte_array.h>
+#include <argos3/plugins/robots/leo/control_interface/ci_leo_wifi_sensor.h>
 
 namespace argos {
    
    class CCI_LeoWiFiActuator : public CCI_Actuator {
 
-   struct SMessage {
-      std::string Address;
-      CByteArray Payload;
-   };
 
    public:
 
@@ -45,7 +42,7 @@ namespace argos {
 
    protected:
 
-      std::vector<SMessage> m_vecMsgQueue;
+      std::vector<CCI_LeoWiFiSensor::SMessage> m_vecMsgQueue;
 
 #ifdef ARGOS_WITH_LUA
       virtual void CreateLuaState(lua_State* pt_lua_state);

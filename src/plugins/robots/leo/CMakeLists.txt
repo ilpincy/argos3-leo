@@ -123,6 +123,8 @@ add_library(argos3plugin_${ARGOS_BUILD_FOR}_leo SHARED
 
 target_link_libraries(argos3plugin_${ARGOS_BUILD_FOR}_leo
   argos3plugin_${ARGOS_BUILD_FOR}_genericrobot
+  argos3plugin_${ARGOS_BUILD_FOR}_entities_leo
+  argos3plugin_${ARGOS_BUILD_FOR}_media_leo
   )
 
 if(ARGOS_BUILD_FOR_SIMULATOR)

@@ -2,8 +2,8 @@
 #include <argos3/core/simulator/simulator.h>
 #include <argos3/core/simulator/entity/composable_entity.h>
 #include <argos3/core/simulator/entity/controllable_entity.h>
-#include <argos3/plugins/simulator/entities/rab_equipped_entity.h>
-#include <argos3/plugins/simulator/media/rab_medium.h>
+#include <argos3/plugins/simulator/entities/wifi_equipped_entity.h>
+#include <argos3/plugins/simulator/media/wifi_medium.h>
 
 namespace argos {
 
@@ -15,8 +15,8 @@ CRange<CRadians> INCLINATION_RANGE(CRadians(0), CRadians(ARGOS_PI));
 /****************************************/
 /****************************************/
 
-CLeoWiFiSensor::CLeoWiFiSensor() :
-    m_pcRangeAndBearingEquippedEntity(nullptr),
+CLeoWiFiMediumSensor::CLeoWiFiMediumSensor() :
+    m_pcWiFiEquippedEntity(nullptr),
     m_fDistanceNoiseStdDev(0.0f),
     m_fPacketDropProb(0.0f),
     m_pcRNG(nullptr),
@@ -26,9 +26,9 @@ CLeoWiFiSensor::CLeoWiFiSensor() :
 /****************************************/
 /****************************************/
 
-void CLeoWiFiSensor::SetRobot(CComposableEntity& c_entity) {
-    /* Assign RAB equipped entity to this sensor */
-    m_pcRangeAndBearingEquippedEntity = &c_entity.GetComponent<CRABEquippedEntity>("rab");
+void CLeoWiFiMediumSensor::SetRobot(CComposableEntity& c_entity) {
+    /* Assign WiFi equipped entity to this sensor */
+    m_pcWiFiEquippedEntity = &c_entity.GetComponent<CWiFiEquippedEntity>("wifiEntity");
     /* Get reference to controllable entity */
     m_pcControllableEntity = &c_entity.GetComponent<CControllableEntity>("controller");
 }
@@ -36,7 +36,7 @@ void CLeoWiFiSensor::SetRobot(CComposableEntity& c_entity) {
 /****************************************/
 /****************************************/
 
-void CLeoWiFiSensor::Init(TConfigurationNode& t_tree) {
+void CLeoWiFiMediumSensor::Init(TConfigurationNode& t_tree) {
     try {
         /* Parent class init */
         CCI_LeoWiFiSensor::Init(t_tree);
@@ -49,12 +49,12 @@ void CLeoWiFiSensor::Init(TConfigurationNode& t_tree) {
         (m_fDistanceNoiseStdDev > 0.0f)) {
         m_pcRNG = CRandom::CreateRNG("argos");
         }
-        /* Get RAB medium from id specified in the XML */
+        /* Get WiFi medium from id specified in the XML */
         std::string strMedium;
         GetNodeAttribute(t_tree, "medium", strMedium);
-        m_pcRangeAndBearingMedium = &(CSimulator::GetInstance().GetMedium<CRABMedium>(strMedium));
-        /* Assign RAB entity to the medium */
-        m_pcRangeAndBearingEquippedEntity->SetMedium(*m_pcRangeAndBearingMedium);
+        m_pcWiFiMedium = &(CSimulator::GetInstance().GetMedium<CWiFiMedium>(strMedium));
+        /* Assign WiFi entity to the medium */
+        m_pcWiFiEquippedEntity->SetMedium(*m_pcWiFiMedium);
     }
     catch(CARGoSException& ex) {
         THROW_ARGOSEXCEPTION_NESTED("Error initializing the range and bearing medium sensor", ex);
@@ -66,82 +66,37 @@ void CLeoWiFiSensor::Init(TConfigurationNode& t_tree) {
 /****************************************/
 /****************************************/
 
-void CLeoWiFiSensor::Update() {
+void CLeoWiFiMediumSensor::Update() {
     /* sensor is disabled--nothing to do */
     if (IsDisabled()) {
     return;
     }
     /** TODO: there's a more efficient way to implement this */
     /* Delete old readings */
-    m_tReadings.clear();
-    /* Get list of communicating RABs */
-    const CSet<CRABEquippedEntity*,SEntityComparator>& setRABs = m_pcRangeAndBearingMedium->GetRABsCommunicatingWith(*m_pcRangeAndBearingEquippedEntity);
-    /* Buffer for calculating the message--robot distance */
-    CVector3 cVectorRobotToMessage;
+    m_vec_messages.clear();
+    /* Get list of communicating WiFis */
+    const CSet<CWiFiEquippedEntity*,SEntityComparator>& setWiFis = m_pcWiFiMedium->GetWiFisCommunicatingWith(*m_pcWiFiEquippedEntity);
+
     /* Buffer for the received packet */
-    CCI_RangeAndBearingSensor::SPacket sPacket;
-    /* Go through communicating RABs and create packets */
-    for(CSet<CRABEquippedEntity*>::iterator it = setRABs.begin();
-        it != setRABs.end(); ++it) {
+    CCI_LeoWiFiSensor::SMessage sMessage;
+    /* Go through communicating WiFis and create packets */
+    for(CSet<CWiFiEquippedEntity*>::iterator it = setWiFis.begin();
+        it != setWiFis.end(); ++it) {
         /* Should we drop this packet? */
         if(m_pcRNG == nullptr || /* No noise to apply */
         !(m_fPacketDropProb > 0.0f &&
             m_pcRNG->Bernoulli(m_fPacketDropProb)) /* Packet is not dropped */
         ) {
-        /* Create a reference to the RAB entity to process */
-        CRABEquippedEntity& cRABEntity = **it;
+        /* Create a reference to the WiFi entity to process */
+        CWiFiEquippedEntity& cWiFiEntity = **it;
         /* Add ray if requested */
         if(m_bShowRays) {
             m_pcControllableEntity->AddCheckedRay(false,
-                                                    CRay3(cRABEntity.GetPosition(),
-                                                        m_pcRangeAndBearingEquippedEntity->GetPosition()));
+                                                    CRay3(cWiFiEntity.GetPosition(),
+                                                        m_pcWiFiEquippedEntity->GetPosition()));
         }
-        /* Calculate vector to entity */
-        cVectorRobotToMessage = cRABEntity.GetPosition();
-        cVectorRobotToMessage -= m_pcRangeAndBearingEquippedEntity->GetPosition();
-        /* If noise was setup, add it */
-        if(m_pcRNG && m_fDistanceNoiseStdDev > 0.0f) {
-            cVectorRobotToMessage += CVector3(
-                m_pcRNG->Gaussian(m_fDistanceNoiseStdDev),
-                m_pcRNG->Uniform(INCLINATION_RANGE),
-                m_pcRNG->Uniform(CRadians::UNSIGNED_RANGE));
-        }
-        /*
-            * Set range and bearing from cVectorRobotToMessage
-            * First, we must rotate the cVectorRobotToMessage so that
-            * it is local to the robot coordinate system. To do this,
-            * it enough to rotate cVectorRobotToMessage by the inverse
-            * of the robot orientation.
-            */
-        cVectorRobotToMessage.Rotate(m_pcRangeAndBearingEquippedEntity->GetOrientation().Inverse());
-        cVectorRobotToMessage.ToSphericalCoords(sPacket.Range,
-                                                sPacket.VerticalBearing,
-                                                sPacket.HorizontalBearing);
-        /* Convert range to cm */
-        sPacket.Range *= 100.0f;
-        /* Normalize horizontal bearing between [-pi,pi] */
-        sPacket.HorizontalBearing.SignedNormalize();
-        /*
-            * The vertical bearing is defined as the angle between the local
-            * robot XY plane and the message source position, i.e., the elevation
-            * in math jargon. However, cVectorRobotToMessage.ToSphericalCoords()
-            * sets sPacket.VerticalBearing to the inclination, which is the angle
-            * between the azimuth vector (robot local Z axis) and
-            * cVectorRobotToMessage. Elevation = 90 degrees - Inclination.
-            */
-        sPacket.VerticalBearing.Negate();
-        sPacket.VerticalBearing += CRadians::PI_OVER_TWO;
-        sPacket.VerticalBearing.SignedNormalize();
         /* Set message data */
-        sPacket.Data = cRABEntity.GetData();
-        /* Add message to the list */
-        // m_tReadings.push_back(sPacket);
-
-        m_vecMsgQueue.push_back({
-                  0,
-                  sPacket.Data
-               });
-
+        cWiFiEntity.RetrieveData(m_vec_messages);
         
         }
     }
@@ -150,37 +105,38 @@ void CLeoWiFiSensor::Update() {
 /****************************************/
 /****************************************/
 
-void CLeoWiFiSensor::Reset() {
-    m_tReadings.clear();
+void CLeoWiFiMediumSensor::Reset() {
+    // m_sMessage.clear();
 }
 
 
 /****************************************/
 /****************************************/
-void CLeoWiFiSensor::Enable() {
-    m_pcRangeAndBearingEquippedEntity->Enable();
+void CLeoWiFiMediumSensor::Enable() {
+    m_pcWiFiEquippedEntity->Enable();
     CCI_Sensor::Enable();
 }
 
 /****************************************/
 /****************************************/
 
-void CLeoWiFiSensor::Disable() {
-    m_pcRangeAndBearingEquippedEntity->Disable();
+void CLeoWiFiMediumSensor::Disable() {
+    m_pcWiFiEquippedEntity->Disable();
     CCI_Sensor::Disable();
 }
 
 /****************************************/
 /****************************************/
 
-void CLeoWiFiSensor::Destroy() {
-    m_pcRangeAndBearingMedium->RemoveEntity(*m_pcRangeAndBearingEquippedEntity);
+void CLeoWiFiMediumSensor::Destroy() {
+    m_pcWiFiMedium->RemoveEntity(*m_pcWiFiEquippedEntity);
 }
 
 /****************************************/
 /****************************************/
 
-void CLeoWiFiSensor::GetMessages(std::vector<SMessage>& vec_messages) {
+void CLeoWiFiMediumSensor::GetMessages(std::vector<CCI_LeoWiFiSensor::SMessage>& vec_messages) {
+   std::cout << __FILE__ << " " << __func__ << std::endl;
    vec_messages.swap(m_vecMsgQueue);
    m_vecMsgQueue.clear();
 }
@@ -189,7 +145,7 @@ void CLeoWiFiSensor::GetMessages(std::vector<SMessage>& vec_messages) {
 /****************************************/
 
 REGISTER_SENSOR(
-    CLeoWiFiSensor, "leo_wifi", "default",
+    CLeoWiFiMediumSensor, "leo_wifi", "default",
     "Davis Catherman [daviscatherman@gmail.com]", "1.0",
     "A simulated wifi sensor for leo.",
 

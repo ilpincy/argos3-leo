@@ -11,12 +11,12 @@
 #include <argos3/core/simulator/entity/controllable_entity.h>
 #include <argos3/core/simulator/entity/embodied_entity.h>
 #include <argos3/plugins/simulator/entities/battery_equipped_entity.h>
-#include <argos3/plugins/simulator/entities/rab_equipped_entity.h>
+#include <argos3/plugins/simulator/entities/wifi_equipped_entity.h>
 #include <argos3/plugins/simulator/entities/proximity_sensor_equipped_entity.h>
 
 namespace argos {
 
-   static const Real RAB_ELEVATION                         = 0.164f;
+   static const Real WiFi_ELEVATION                         = 0.164f;
    static const Real BODY_RADIUS                           = 0.30;
    static const Real PROXIMITY_SENSOR_RING_ELEVATION       = 0.06f;
    static const Real PROXIMITY_SENSOR_RING_RADIUS          = BODY_RADIUS;
@@ -31,6 +31,7 @@ namespace argos {
       m_pcControllableEntity(nullptr),
       m_pcEmbodiedEntity(nullptr),
       m_pcBatteryEquippedEntity(nullptr),
+      m_pcWiFiEquippedEntity(NULL),
       m_pcProximitySensorEquippedEntity(nullptr) {
    }
 
@@ -41,13 +42,14 @@ namespace argos {
                           const std::string& str_controller_id,
                           const CVector3& c_position,
                           const CQuaternion& c_orientation,
-                          Real f_rab_range,
-                          size_t un_rab_data_size,
+                          Real f_wifi_range,
+                          size_t un_wifi_data_size,
                           const std::string& str_bat_model) :
       CComposableEntity(nullptr, str_id),
       m_pcControllableEntity(nullptr),
       m_pcEmbodiedEntity(nullptr),
       m_pcBatteryEquippedEntity(nullptr),
+      m_pcWiFiEquippedEntity(NULL),
       m_pcProximitySensorEquippedEntity(nullptr) {
       try {
          /*
@@ -59,16 +61,16 @@ namespace argos {
          /* Battery equipped entity */
          m_pcBatteryEquippedEntity = new CBatteryEquippedEntity(this, "battery_0", str_bat_model);
          AddComponent(*m_pcBatteryEquippedEntity);
-         /* RAB equipped entity */
-         m_pcRABEquippedEntity =
-            new CRABEquippedEntity(this,
-                                   "rab_0",
-                                   un_rab_data_size,
-                                   f_rab_range,
+         /* WiFi equipped entity */
+         m_pcWiFiEquippedEntity =
+            new CWiFiEquippedEntity(this,
+                                   "wifi_0",
+                                   un_wifi_data_size,
+                                   f_wifi_range,
                                    m_pcEmbodiedEntity->GetOriginAnchor(),
                                    *m_pcEmbodiedEntity,
-                                   CVector3(0.0f, 0.0f, RAB_ELEVATION));
-         AddComponent(*m_pcRABEquippedEntity);
+                                   CVector3(0.0f, 0.0f, WiFi_ELEVATION));
+         AddComponent(*m_pcWiFiEquippedEntity);
          /* Proximity sensor equipped entity */
          m_pcProximitySensorEquippedEntity =
             new CProximitySensorEquippedEntity(this, "proximity_0");
@@ -115,20 +117,20 @@ namespace argos {
          if(NodeExists(t_tree, "battery"))
             m_pcBatteryEquippedEntity->Init(GetNode(t_tree, "battery"));
          AddComponent(*m_pcBatteryEquippedEntity);
-         /* RAB equipped entity */
+         /* WiFi equipped entity */
          Real fRange = 3.0f;
-         GetNodeAttributeOrDefault(t_tree, "rab_range", fRange, fRange);
+         GetNodeAttributeOrDefault(t_tree, "wifi_range", fRange, fRange);
          UInt32 unDataSize = 10;
-         GetNodeAttributeOrDefault(t_tree, "rab_data_size", unDataSize, unDataSize);
-         m_pcRABEquippedEntity =
-            new CRABEquippedEntity(this,
-                                   "rab_0",
+         GetNodeAttributeOrDefault(t_tree, "wifi_data_size", unDataSize, unDataSize);
+         m_pcWiFiEquippedEntity =
+            new CWiFiEquippedEntity(this,
+                                   "wifi_0",
                                    unDataSize,
                                    fRange,
                                    m_pcEmbodiedEntity->GetOriginAnchor(),
                                    *m_pcEmbodiedEntity,
-                                   CVector3(0.0f, 0.0f, RAB_ELEVATION));
-         AddComponent(*m_pcRABEquippedEntity);
+                                   CVector3(0.0f, 0.0f, WiFi_ELEVATION));
+         AddComponent(*m_pcWiFiEquippedEntity);
          /* Proximity sensor equipped entity */
          m_pcProximitySensorEquippedEntity =
             new CProximitySensorEquippedEntity(this, "proximity_0");
@@ -216,23 +218,23 @@ namespace argos {
                    "Leo. The value of the attribute must be set to the id of a previously\n"
                    "defined controller. Controllers are defined in the <controllers> XML subtree.\n\n"
                    "OPTIONAL XML CONFIGURATION\n\n"
-                   "You can set the emission range of the range-and-bearing system. By default, a\n"
-                   "message sent by a Leo can be received up to 3m. By using the 'rab_range'\n"
+                   "You can set the emission range of the wifi system. By default, a\n"
+                   "message sent by a Leo can be received up to 3m. By using the 'wifi_range'\n"
                    "attribute, you can change it to, i.e., 4m as follows:\n\n"
                    "  <arena ...>\n"
                    "    ...\n"
-                   "    <leo id=\"kh0\" rab_range=\"4\">\n"
+                   "    <leo id=\"kh0\" wifi_range=\"4\">\n"
                    "      <body position=\"0.4,2.3,0.25\" orientation=\"45,0,0\" />\n"
                    "      <controller config=\"mycntrl\" />\n"
                    "    </leo>\n"
                    "    ...\n"
                    "  </arena>\n\n"
-                   "You can also set the data sent at each time step through the range-and-bearing"
+                   "You can also set the data sent at each time step through the wifi"
                    "system. By default, a message sent by a leo is 50 bytes long. By using the"
-                   "'rab_data_size' attribute, you can change it to, i.e., 100 bytes as follows:\n\n"
+                   "'wifi_data_size' attribute, you can change it to, i.e., 100 bytes as follows:\n\n"
                    "  <arena ...>\n"
                    "    ...\n"
-                   "    <leo id=\"kh0\" rab_data_size=\"100\">\n"
+                   "    <leo id=\"kh0\" wifi_data_size=\"100\">\n"
                    "      <body position=\"0.4,2.3,0.25\" orientation=\"45,0,0\" />\n"
                    "      <controller config=\"mycntrl\" />\n"
                    "    </leo>\n"

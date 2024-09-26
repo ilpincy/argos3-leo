@@ -5,10 +5,10 @@
 #include <string>
 
 namespace argos {
-class CLeoWiFiSensor;
-class CRABEquippedEntity;
+class CLeoWiFiMediumSensor;
+class CWiFiEquippedEntity;
 class CEmbodiedEntity;
-class CRABMedium;
+class CWiFiMedium;
 } // namespace argos
 
 #include <argos3/core/simulator/sensor.h>
@@ -16,15 +16,16 @@ class CRABMedium;
 #include <argos3/core/utility/math/range.h>
 #include <argos3/core/utility/math/rng.h>
 #include <argos3/plugins/robots/leo/control_interface/ci_leo_wifi_sensor.h>
-#include <argos3/plugins/simulator/entities/rab_equipped_entity.h>
-#include <argos3/plugins/robots/generic/control_interface/ci_range_and_bearing_sensor.h>
+#include <argos3/plugins/simulator/entities/wifi_equipped_entity.h>
 
 namespace argos {
-class CLeoWiFiSensor : public CCI_LeoWiFiSensor, public CSimulatedSensor {
+
+class CLeoWiFiMediumSensor : public CCI_LeoWiFiSensor, public CSimulatedSensor {
 
 public:
-  CLeoWiFiSensor();
-  ~CLeoWiFiSensor() {}
+
+  CLeoWiFiMediumSensor();
+  ~CLeoWiFiMediumSensor() {}
 
   virtual void SetRobot(CComposableEntity& c_entity);
 
@@ -43,7 +44,7 @@ public:
       /**
        * Fills the given message vector and flushes the internal message queue
        */
-      virtual void GetMessages(std::vector<SMessage>& vec_messages);
+      virtual void GetMessages(std::vector<CCI_LeoWiFiSensor::SMessage>& vec_messages);
 
       /**
        * Discards all the messages in the queue.
@@ -68,17 +69,16 @@ public:
 
 private:
 
-  CRABEquippedEntity*  m_pcRangeAndBearingEquippedEntity;
+  CWiFiEquippedEntity*  m_pcWiFiEquippedEntity;
   CControllableEntity* m_pcControllableEntity;
-  CRABMedium*          m_pcRangeAndBearingMedium;
+  CWiFiMedium*          m_pcWiFiMedium;
   Real                 m_fDistanceNoiseStdDev;
   Real                 m_fPacketDropProb;
   CRandom::CRNG*       m_pcRNG;
   CSpace&              m_cSpace;
   bool                 m_bShowRays;
-  CCI_RangeAndBearingSensor::TReadings m_tReadings;
 
-  std::vector<CCI_LeoWiFiSensor::SMessage> vec_messages;
+  std::vector<CCI_LeoWiFiSensor::SMessage> m_vec_messages;
 
 };
 

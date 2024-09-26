@@ -30,6 +30,7 @@ void CLeoTestCommunication::ControlStep() {
       /* List received messages */
       std::vector<CCI_LeoWiFiSensor::SMessage> vecMessages;
       m_pcWiFiSensor->GetMessages(vecMessages);
+
       if(vecMessages.empty()) {
          RLOG << "No messages received" << std::endl;
       }
