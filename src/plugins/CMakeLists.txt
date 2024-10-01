@@ -1,2 +1,5 @@
-add_subdirectory(simulator)
-add_subdirectory(robots)
+if(ARGOS_BUILD_FOR_SIMULATOR)
+  add_subdirectory(simulator)
+elseif(ARGOS_BUILD_FOR_SIMULATOR)
+  add_subdirectory(robots)
+endif(ARGOS_BUILD_FOR_SIMULATOR)

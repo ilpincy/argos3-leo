@@ -37,7 +37,6 @@ set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT
 
 set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO_REALROBOT
   real_robot/real_leo.cpp
-  real_robot/real_leo_device.cpp
   real_robot/real_leo_posetwist_actuator.cpp
   real_robot/real_leo_odometry_sensor.cpp
   real_robot/real_leo_ar_tag_sensor.cpp
