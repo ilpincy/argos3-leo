@@ -21,7 +21,7 @@ void CLeoTestController::ControlStep() {
    if(counter >= 20)
       leoPoseTwistActuator->SetLinearVelocity(0.0);
    std::cout<<"Odometry readings: X:"<<leoOdometrySensor->GetReading().Position.GetX()<<"  Y:"<<leoOdometrySensor->GetReading().Position.GetY()<<"  Z:"<<leoOdometrySensor->GetReading().Position.GetZ()<<"  "<<std::endl;
-   for (const auto& marker : leoArTagSensor->GetReading()){
+   for (const auto& marker : leoArTagSensor->GetReadings()){
       std::cout<<"AR tag readings: Tag:"<<marker.TagId<<"  Confidence:"<<marker.Confidence<<"  Position: X:"<<marker.Position.GetX()<<"  Y:"<<marker.Position.GetY()<<"  Z:"<<marker.Position.GetZ()<<std::endl;
    }
    ++counter;

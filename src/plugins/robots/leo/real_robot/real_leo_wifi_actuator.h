@@ -8,12 +8,12 @@
 
 using namespace argos;
 
-class CRealLeoWifiActuator : public CCI_LeoWiFiActuator,
+class CRealLeoWiFiActuator : public CCI_LeoWiFiActuator,
                              public CRealLeoDevice {
 
 public:
 
-   virtual ~CRealLeoWifiActuator() {}
+   virtual ~CRealLeoWiFiActuator() {}
 
    virtual void Init(TConfigurationNode& t_node);
 
