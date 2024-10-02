@@ -63,6 +63,7 @@ void CRealLeoWiFiActuator::SendToOne(const std::string& str_addr, const CByteArr
 /****************************************/
 
 void CRealLeoWiFiActuator::SendToMany(const CByteArray& c_message) {
+    std::cout << "am i here?" << std::endl;
    m_vecMsgQueue.push_back({"", c_message});
 }
 

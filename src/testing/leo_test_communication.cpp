@@ -22,11 +22,14 @@ void CLeoTestCommunication::Init(TConfigurationNode& t_node) {
 void CLeoTestCommunication::ControlStep() {
    /* Send message */
    static UInt32 unCounter = 0;
+
    if(unCounter % 100 == 0) {
       CByteArray cBuf;
       cBuf << unCounter << GetId();
+
       m_pcWiFiActuator->SendToMany(cBuf);
-      // RLOG << "[" << unCounter << "] Sent " << GetId() << std::endl;
+      RLOG << "[" << unCounter << "] Sent " << GetId() << std::endl;
+   }
       /* List received messages */
       std::vector<CCI_LeoWiFiSensor::SMessage> vecMessages;
       m_pcWiFiSensor->GetMessages(vecMessages);
@@ -45,7 +48,6 @@ void CLeoTestCommunication::ControlStep() {
             RLOG << "Received message #" << unRCounter << " from " << strRId << std::endl;
          }
       }
-   }
    /* Increase counter */
    ++unCounter;
 }

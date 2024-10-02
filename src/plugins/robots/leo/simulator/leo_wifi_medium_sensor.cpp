@@ -28,7 +28,7 @@ CLeoWiFiMediumSensor::CLeoWiFiMediumSensor() :
 
 void CLeoWiFiMediumSensor::SetRobot(CComposableEntity& c_entity) {
     /* Assign WiFi equipped entity to this sensor */
-    m_pcWiFiEquippedEntity = &c_entity.GetComponent<CWiFiEquippedEntity>("wifiEntity");
+    m_pcWiFiEquippedEntity = &c_entity.GetComponent<CWiFiEquippedEntity>("wifi");
     /* Get reference to controllable entity */
     m_pcControllableEntity = &c_entity.GetComponent<CControllableEntity>("controller");
 }
@@ -73,7 +73,7 @@ void CLeoWiFiMediumSensor::Update() {
     }
     /** TODO: there's a more efficient way to implement this */
     /* Delete old readings */
-    m_vec_messages.clear();
+    m_vecMsgQueue.clear();
     /* Get list of communicating WiFis */
     const CSet<CWiFiEquippedEntity*,SEntityComparator>& setWiFis = m_pcWiFiMedium->GetWiFisCommunicatingWith(*m_pcWiFiEquippedEntity);
 
@@ -96,7 +96,7 @@ void CLeoWiFiMediumSensor::Update() {
                                                         m_pcWiFiEquippedEntity->GetPosition()));
         }
         /* Set message data */
-        cWiFiEntity.RetrieveData(m_vec_messages);
+        cWiFiEntity.RetrieveData(m_vecMsgQueue);
         
         }
     }
@@ -136,7 +136,7 @@ void CLeoWiFiMediumSensor::Destroy() {
 /****************************************/
 
 void CLeoWiFiMediumSensor::GetMessages(std::vector<CCI_LeoWiFiSensor::SMessage>& vec_messages) {
-   std::cout << __FILE__ << " " << __func__ << std::endl;
+//    std::cout << __FILE__ << " " << __func__ << std::endl;
    vec_messages.swap(m_vecMsgQueue);
    m_vecMsgQueue.clear();
 }

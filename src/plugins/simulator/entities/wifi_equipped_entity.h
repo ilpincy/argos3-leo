@@ -64,7 +64,7 @@ namespace argos {
     //      return m_cData;
     //   }
 
-      void RetrieveData(std::vector<CCI_LeoWiFiSensor::SMessage> vecMsgQueue);
+      void RetrieveData(std::vector<CCI_LeoWiFiSensor::SMessage>& vecMsgQueue);
 
       void AppendData(CCI_LeoWiFiSensor::SMessage& robot);
 
@@ -83,7 +83,7 @@ namespace argos {
       }
 
       virtual std::string GetTypeDescription() const {
-         return "wifiEntity";
+         return "wifi";
       }
 
       inline CWiFiMedium& GetMedium() {

@@ -20,7 +20,7 @@
         <leo_wifi implementation="default" />
       </actuators>
       <sensors>
-        <leo_wifi implementation="default" medium="wifi" range="2" show_rays="true" />
+        <leo_wifi implementation="default" medium="wifi" show_rays="true" />
       </sensors>
       <params />
     </leo_test_communication>
@@ -31,12 +31,12 @@
   <!-- *********************** -->
   <arena size="4, 4, 1" center="0,0,0.5">
 
-    <leo id="leo1" wifi_data_size="1000" wifi_range="2">
+    <leo id="leo1" wifi_data_size="1000" wifi_range="10">
       <body position="0,0,0" orientation="0,0,0" />
       <controller config="mycntrl" />
     </leo>
 
-    <leo id="leo2" rab_data_size="1000" rab_range="2">
+    <leo id="leo2" wifi_data_size="1000" wifi_range="10">
       <body position="1,1,0" orientation="0,0,0" />
       <controller config="mycntrl" />
     </leo>
@@ -58,7 +58,7 @@
   <!-- * Media * -->
   <!-- ********* -->
   <media>
-    <wifi id="wifi" />
+    <wifi id="wifi"  check_occlusions="false"/>
   </media>
 
   <!-- ****************** -->

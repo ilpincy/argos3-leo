@@ -78,7 +78,7 @@ private:
   CSpace&              m_cSpace;
   bool                 m_bShowRays;
 
-  std::vector<CCI_LeoWiFiSensor::SMessage> m_vec_messages;
+//   std::vector<CCI_LeoWiFiSensor::SMessage> m_vec_messages;
 
 };
 
