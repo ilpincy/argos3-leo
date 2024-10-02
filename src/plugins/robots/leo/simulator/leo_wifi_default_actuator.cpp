@@ -33,8 +33,6 @@ void CLeoWiFiActuator::Reset() {
 /****************************************/
 
 void CLeoWiFiActuator::SendToMany(const CByteArray& c_message) {
-   std::cout << __func__ << std::endl;
-   std::cout << "Msg: " << c_message << " - from: " << m_pcWiFiEquippedEntity->GetRootEntity().GetId() << std::endl;
    m_vecMsgQueue.push_back({"", c_message});
 }
 

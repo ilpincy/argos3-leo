@@ -21,7 +21,7 @@ void CLeoTestCommunication::Init(TConfigurationNode& t_node) {
 
 void CLeoTestCommunication::ControlStep() {
    /* Send message */
-   static UInt32 unCounter = 0;
+   UInt32 unCounter = 0;
 
    if(unCounter % 100 == 0) {
       CByteArray cBuf;
