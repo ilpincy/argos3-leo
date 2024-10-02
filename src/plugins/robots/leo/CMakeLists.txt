@@ -37,7 +37,6 @@ set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT
 
 set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO_REALROBOT
   real_robot/real_leo.cpp
-  real_robot/real_leo_device.cpp
   real_robot/real_leo_posetwist_actuator.cpp
   real_robot/real_leo_odometry_sensor.cpp
   real_robot/real_leo_ar_tag_sensor.cpp
@@ -108,10 +107,10 @@ if(ARGOS_BUILD_FOR STREQUAL "leo")
     )
 endif(ARGOS_BUILD_FOR STREQUAL "leo")
 
-set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
-  ${ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO}
-  ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO}
-)
+# set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO
+#   ${ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO}
+#   ${ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO}
+# )
 
 #
 # Create leo plugin
@@ -121,12 +120,17 @@ add_library(argos3plugin_${ARGOS_BUILD_FOR}_leo SHARED
   ${ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO}
   )
 
-target_link_libraries(argos3plugin_${ARGOS_BUILD_FOR}_leo
-  argos3plugin_${ARGOS_BUILD_FOR}_genericrobot
-  argos3plugin_${ARGOS_BUILD_FOR}_entities_leo
-  argos3plugin_${ARGOS_BUILD_FOR}_media_leo
-  )
-
+if(ARGOS_BUILD_FOR_SIMULATOR)
+  target_link_libraries(argos3plugin_${ARGOS_BUILD_FOR}_leo
+    argos3plugin_${ARGOS_BUILD_FOR}_genericrobot
+    argos3plugin_${ARGOS_BUILD_FOR}_entities_leo
+    argos3plugin_${ARGOS_BUILD_FOR}_media_leo
+    )
+elseif(ARGOS_BUILD_FOR STREQUAL "leo")
+  target_link_libraries(argos3plugin_${ARGOS_BUILD_FOR}_leo
+    argos3plugin_${ARGOS_BUILD_FOR}_genericrobot
+    )
+endif(ARGOS_BUILD_FOR_SIMULATOR)
 if(ARGOS_BUILD_FOR_SIMULATOR)
   target_link_libraries(argos3plugin_simulator_leo
     argos3plugin_simulator_dynamics2d

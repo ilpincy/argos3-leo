@@ -47,7 +47,7 @@ void CLeoSwarmController::ControlStep() {
     }
 
     // Do I see anything?
-    int detectedTag = leoArTagSensor->GetReading().size() > 0;
+    int detectedTag = leoArTagSensor->GetReadings().size() > 0;
 
     // Update others if if different to last recorded
     if (holds[GetId()] != detectedTag) {
