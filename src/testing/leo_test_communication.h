@@ -5,6 +5,9 @@
 #include <argos3/core/control_interface/ci_controller.h>
 #include <argos3/plugins/robots/leo/control_interface/ci_leo_wifi_actuator.h>
 #include <argos3/plugins/robots/leo/control_interface/ci_leo_wifi_sensor.h>
+#include <chrono>
+#include <ctime> 
+// #include <date> 
 
 using namespace argos;
 
@@ -49,8 +52,19 @@ public:
 
 private:
 
+   struct MsgDelayStats {
+      double delay;
+      int count;
+   };
+
    CCI_LeoWiFiActuator* m_pcWiFiActuator;
    CCI_LeoWiFiSensor* m_pcWiFiSensor;
+
+   double m_initializedTime;
+   double m_noMsgPrintTime;
+   UInt32 m_unCounter;
+
+   std::map<std::string, MsgDelayStats> m_recieveStats;
 
 };
 
