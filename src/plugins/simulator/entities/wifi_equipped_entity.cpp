@@ -145,8 +145,9 @@ namespace argos {
 
    void CWiFiEquippedEntity::RetrieveData(std::vector<CCI_LeoWiFiSensor::SMessage>& vecMsgQueue) {
     //   std::cout << __FILE__ << " " << __func__ << std::endl;
-      vecMsgQueue.swap(m_vecMsgQueue);
-      ClearData();
+      for(auto& item : m_vecMsgQueue) {
+         vecMsgQueue.push_back(item);
+      }
    }
 
    /****************************************/

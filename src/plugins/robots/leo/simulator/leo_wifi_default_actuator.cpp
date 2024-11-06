@@ -16,6 +16,7 @@ void CLeoWiFiActuator::SetRobot(CComposableEntity& c_entity) {
 /****************************************/
 
 void CLeoWiFiActuator::Update() {
+    m_pcWiFiEquippedEntity->ClearData();
     for(auto& e : m_vecMsgQueue) {
         m_pcWiFiEquippedEntity->AppendData(e);
     }

@@ -101,6 +101,7 @@ void CLeoTestCommunication::ControlStep() {
             std::endl;
       
       }
+      m_pcWiFiSensor->FlushMessages();
    }
    /* Increase counter */
    ++m_unCounter;
