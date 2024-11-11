@@ -6,7 +6,7 @@
 
 CRealLeoOdometrySensor::CRealLeoOdometrySensor(ros::NodeHandle& c_node_handle) :
    CRealLeoROSDevice(c_node_handle) {
-   m_cSub = c_node_handle.subscribe("/odometry_merged",
+   m_cSub = c_node_handle.subscribe("/odometry_merged_offset",
                                     1,
                                     &CRealLeoOdometrySensor::Update,
                                     this);
