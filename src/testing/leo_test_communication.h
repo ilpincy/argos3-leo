@@ -1,20 +1,24 @@
-#ifndef TEST_CONTROLLER_H
-#define TEST_CONTROLLER_H
+#ifndef LEO_TEST_COMMUNICATION_H
+#define LEO_TEST_COMMUNICATION_H
 
 /* Definition of the CCI_Controller class. */
 #include <argos3/core/control_interface/ci_controller.h>
-#include <argos3/plugins/robots/leo/control_interface/ci_leo_posetwist_actuator.h>
+#include <argos3/plugins/robots/leo/control_interface/ci_leo_wifi_actuator.h>
+#include <argos3/plugins/robots/leo/control_interface/ci_leo_wifi_sensor.h>
+#include <chrono>
+#include <ctime> 
+// #include <date> 
 
 using namespace argos;
 
-class CTestController : public CCI_Controller {
+class CLeoTestCommunication : public CCI_Controller {
 
 public:
    /* Class constructor. */
-   CTestController();
+   CLeoTestCommunication();
 
    /* Class destructor. */
-   virtual ~CTestController() {}
+   virtual ~CLeoTestCommunication() {}
    /*
     * This function initializes the controller.
     * The 't_node' variable points to the <parameters> section in the XML
@@ -46,9 +50,21 @@ public:
     */
    virtual void Destroy() {}
 
-   private:
+private:
 
-    CCI_LeoPoseTwistActuator* leoPoseTwistActuator;
+   struct MsgDelayStats {
+      double delay;
+      int count;
+   };
+
+   CCI_LeoWiFiActuator* m_pcWiFiActuator;
+   CCI_LeoWiFiSensor* m_pcWiFiSensor;
+
+   double m_initializedTime;
+   double m_noMsgPrintTime;
+   UInt32 m_unCounter;
+
+   std::map<std::string, MsgDelayStats> m_recieveStats;
 
 };
 
