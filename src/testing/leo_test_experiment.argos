@@ -19,9 +19,11 @@
       <params alpha="7.5" delta="0.1" velocity="5" />
       <actuators>
         <leo_posetwist implementation="default"/>
+        <leo_navigation implementation="default"/>
       </actuators>
       <sensors>
         <leo_odometry implementation="default"/>
+        <leo_localization implementation="default"/>
         <leo_ar_tag implementation="default"/>
       </sensors>
     </leo_test_controller>

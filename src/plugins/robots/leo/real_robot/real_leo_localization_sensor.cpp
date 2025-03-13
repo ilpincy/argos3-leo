@@ -34,7 +34,7 @@ CRealLeoLocalizationSensor::CRealLeoLocalizationSensor(ros::NodeHandle& c_node_h
 
 void CRealLeoLocalizationSensor::Update(const ros::TimerEvent& event) {
 
-    std::cout << "[CRealLeoLocalizationSensor::Update] Starting Update function (Timer Callback)" << std::endl;
+    // std::cout << "[CRealLeoLocalizationSensor::Update] Starting Update function (Timer Callback)" << std::endl;
 
     // --- Get Robot Pose from TF2 ---
     geometry_msgs::TransformStamped transformStamped;
@@ -46,9 +46,9 @@ void CRealLeoLocalizationSensor::Update(const ros::TimerEvent& event) {
         m_lastTransformStamped = transformStamped;
         m_bLastTransformValid = true; // Set flag to true as we have a valid transform
 
-        std::cout << "[CRealLeoLocalizationSensor::Update] Before lookupTransform: map_frame=" << m_strMapFrame << ", robot_frame=" << m_strRobotFrame << std::endl;
+        // std::cout << "[CRealLeoLocalizationSensor::Update] Before lookupTransform: map_frame=" << m_strMapFrame << ", robot_frame=" << m_strRobotFrame << std::endl;
         transformStamped = m_tfBuffer.lookupTransform(m_strMapFrame, m_strRobotFrame, ros::Time::now() - ros::Duration(0.2), ros::Duration(5.0));
-        std::cout << "[CRealLeoLocalizationSensor::Update] After successful lookupTransform" << std::endl;
+        // std::cout << "[CRealLeoLocalizationSensor::Update] After successful lookupTransform" << std::endl;
 
         m_sReading.Position.Set(
             transformStamped.transform.translation.x,
@@ -88,5 +88,5 @@ void CRealLeoLocalizationSensor::Update(const ros::TimerEvent& event) {
         }
     }
 
-    std::cout << "[CRealLeoLocalizationSensor::Update] Ending Update function" << std::endl;
+    // std::cout << "[CRealLeoLocalizationSensor::Update] Ending Update function" << std::endl;
 }

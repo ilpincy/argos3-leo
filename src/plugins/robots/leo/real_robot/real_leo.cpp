@@ -1,4 +1,6 @@
 #include "real_leo.h"
+#include "real_leo_navigation_actuator.h"
+#include "real_leo_localization_sensor.h"
 #include "real_leo_posetwist_actuator.h"
 #include "real_leo_odometry_sensor.h"
 #include "real_leo_ar_tag_sensor.h"
@@ -62,12 +64,14 @@ void CRealLeo::Destroy() {
 /****************************************/
 
 CCI_Actuator* CRealLeo::MakeActuator(const std::string& str_name) {
+   if(str_name == "leo_navigation") {
+      CRealLeoNavigationActuator* pcAct = new CRealLeoNavigationActuator(*m_pcNodeHandle);
+      m_vecActuators.push_back(pcAct);
+      LOG << "[INFO] Successfully initialized actuator \"" << str_name << std::endl;
+      return pcAct;
+   }
    if(str_name == "leo_posetwist") {
-// #ifdef catkin_FOUND
       CRealLeoPoseTwistActuator* pcAct = new CRealLeoPoseTwistActuator(*m_pcNodeHandle);
-// #else
-//       CRealLeoPoseTwistActuator* pcAct = new CRealLeoPoseTwistActuator();
-// #endif // catkin_FOUND
       m_vecActuators.push_back(pcAct);
       LOG << "[INFO] Successfully initialized actuator \"" << str_name << std::endl;
       return pcAct;
@@ -85,12 +89,14 @@ CCI_Actuator* CRealLeo::MakeActuator(const std::string& str_name) {
 /****************************************/
 
 CCI_Sensor* CRealLeo::MakeSensor(const std::string& str_name) {
+   if(str_name == "leo_localization") {
+      CRealLeoLocalizationSensor* pcSensor = new CRealLeoLocalizationSensor(*m_pcNodeHandle, "base_footprint", "map");
+      m_vecSensors.push_back(pcSensor);
+      LOG << "[INFO] Successfully initialized sensor \"" << str_name << std::endl;
+      return pcSensor;
+   }
    if(str_name == "leo_odometry") {
-// #ifdef catkin_FOUND
       CRealLeoOdometrySensor* pcSensor = new CRealLeoOdometrySensor(*m_pcNodeHandle);
-// #else
-//       CRealLeoOdometrySensor* pcSensor = new CRealLeoOdometrySensor();
-// #endif // catkin_FOUND
       m_vecSensors.push_back(pcSensor);
       LOG << "[INFO] Successfully initialized sensor \"" << str_name << std::endl;
       return pcSensor;

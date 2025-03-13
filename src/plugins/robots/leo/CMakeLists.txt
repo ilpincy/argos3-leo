@@ -28,6 +28,8 @@ set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO_SIMULATOR
 set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT
   real_robot/real_leo.h
   real_robot/real_leo_device.h
+  real_robot/real_leo_navigation_actuator.h
+  real_robot/real_leo_localization_sensor.h
   real_robot/real_leo_posetwist_actuator.h
   real_robot/real_leo_odometry_sensor.h
   real_robot/real_leo_ar_tag_sensor.h
@@ -37,6 +39,8 @@ set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_REALROBOT
 
 set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO_REALROBOT
   real_robot/real_leo.cpp
+  real_robot/real_leo_navigation_actuator.cpp
+  real_robot/real_leo_localization_sensor.cpp
   real_robot/real_leo_posetwist_actuator.cpp
   real_robot/real_leo_odometry_sensor.cpp
   real_robot/real_leo_ar_tag_sensor.cpp
@@ -47,6 +51,8 @@ set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO_REALROBOT
 # Control Interfaces
 
 set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE
+  control_interface/ci_leo_navigation_actuator.h
+  control_interface/ci_leo_localization_sensor.h
   control_interface/ci_leo_posetwist_actuator.h
   control_interface/ci_leo_odometry_sensor.h
   control_interface/ci_leo_ar_tag_sensor.h
@@ -55,6 +61,8 @@ set(ARGOS3_HEADERS_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE
   )
 
 set(ARGOS3_SOURCES_PLUGINS_ROBOTS_LEO_CONTROLINTERFACE
+  control_interface/ci_leo_navigation_actuator.cpp
+  control_interface/ci_leo_localization_sensor.cpp
   control_interface/ci_leo_posetwist_actuator.cpp
   control_interface/ci_leo_odometry_sensor.cpp
   control_interface/ci_leo_ar_tag_sensor.cpp
