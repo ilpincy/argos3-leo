@@ -29,6 +29,7 @@ CRealLeoNavigationActuator::CRealLeoNavigationActuator(ros::NodeHandle& c_node_h
 void CRealLeoNavigationActuator::Do(Real f_elapsed_time) {
    #ifdef catkin_FOUND
    if(m_cGoalPose.header.frame_id != "") { // Check if a goal pose is set (frame_id as flag)
+     m_cGoalPose.header.stamp = ros::Time::now();
      move_base_msgs::MoveBaseGoal goal;
      goal.target_pose = m_cGoalPose;
 

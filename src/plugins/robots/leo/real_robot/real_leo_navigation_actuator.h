@@ -38,6 +38,10 @@ public:
         m_cGoalPose = cGoalPose;
     }
 
+    virtual void cancelGoal() {
+      m_cMoveBaseClient.cancelAllGoals();
+    }
+
 private:
 
 // #ifdef catkin_FOUND
