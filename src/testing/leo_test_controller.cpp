@@ -25,7 +25,7 @@ void CLeoTestController::ControlStep() {
  
     if(counter % 400 == 50) {
         geometry_msgs::PoseStamped pose_stamped;
-        pose_stamped.header.frame_id = "map"; pose_stamped.header.stamp = ros::Time::now(); pose_stamped.pose.position.x = -3.0; pose_stamped.pose.orientation.w = 1.0;
+        pose_stamped.header.frame_id = "map"; pose_stamped.header.stamp = ros::Time::now(); pose_stamped.pose.position.y = -1.5; pose_stamped.pose.orientation.w = 1.0;
 
         leoNavigationActuator->setGoal(pose_stamped);
         std::cout<<"SENDING GOAL!!!!!!!!!!!" << std::endl;
@@ -33,7 +33,7 @@ void CLeoTestController::ControlStep() {
 
     if(counter % 400 == 250) {
         geometry_msgs::PoseStamped pose_stamped;
-        pose_stamped.header.frame_id = "map"; pose_stamped.header.stamp = ros::Time::now(); pose_stamped.pose.position.x = -1.0; pose_stamped.pose.orientation.w = 1.0;
+        pose_stamped.header.frame_id = "map"; pose_stamped.header.stamp = ros::Time::now(); pose_stamped.pose.position.y = 1.5; pose_stamped.pose.orientation.w = 1.0;
 
         leoNavigationActuator->setGoal(pose_stamped);
         std::cout<<"SENDING GOAL!!!!!!!!!!!" << std::endl;

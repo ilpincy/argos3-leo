@@ -34,12 +34,17 @@ public:
    #endif // catkin_FOUND
 
 
-    virtual void setGoal(geometry_msgs::PoseStamped& cGoalPose) {
+    virtual void setGoal(geometry_msgs::PoseStamped& cGoalPose) override{
         m_cGoalPose = cGoalPose;
     }
 
+    virtual void setGoal(const argos::CVector3 &cGoalPosition) override;
+
+    virtual void setGoal(const argos::CVector3 &cGoalPosition,
+                         const argos::CQuaternion &cGoalOrientation) override;
+
     virtual void cancelGoal() {
-      m_cMoveBaseClient.cancelAllGoals();
+      m_cMoveBaseClient.cancelGoal();
     }
 
 private:

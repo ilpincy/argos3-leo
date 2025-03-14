@@ -42,3 +42,23 @@ void CRealLeoNavigationActuator::Do(Real f_elapsed_time) {
    }
    #endif
 }
+
+void CRealLeoNavigationActuator::setGoal(const argos::CVector3 &cGoalPosition) {
+  m_cGoalPose.header.frame_id = "map";
+  m_cGoalPose.pose.position.x = cGoalPosition.GetX();
+  m_cGoalPose.pose.position.y = cGoalPosition.GetY();
+  m_cGoalPose.pose.orientation.w = 1;
+}
+
+void CRealLeoNavigationActuator::setGoal(
+    const argos::CVector3 &cGoalPosition,
+    const argos::CQuaternion &cGoalOrientation) {
+  m_cGoalPose.header.frame_id = "map";
+  m_cGoalPose.pose.position.x = cGoalPosition.GetX();
+  m_cGoalPose.pose.position.y = cGoalPosition.GetY();
+
+  m_cGoalPose.pose.orientation.x = cGoalOrientation.GetX();
+  m_cGoalPose.pose.orientation.y = cGoalOrientation.GetY();
+  m_cGoalPose.pose.orientation.z = cGoalOrientation.GetZ();
+  m_cGoalPose.pose.orientation.w = cGoalOrientation.GetW();
+}
